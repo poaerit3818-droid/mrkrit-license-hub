@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
-👑 Mr.krit AI learning Ultra XXXX - Central Cloud License & Telemetry Server
+๐‘‘ Mr.krit AI learning Ultra XXXX - Central Cloud License & Telemetry Server
 =============================================================================
-ระบบศูนย์กลางจัดการคีย์สิทธิ์การใช้งาน, ตรวจจับบอทออนไลน์สด, และแดชบอร์ดหลังบ้าน (Vercel Native)
+เธฃเธฐเธเธเธจเธนเธเธขเนเธเธฅเธฒเธเธเธฑเธ”เธเธฒเธฃเธเธตเธขเนเธชเธดเธ—เธเธดเนเธเธฒเธฃเนเธเนเธเธฒเธ, เธ•เธฃเธงเธเธเธฑเธเธเธญเธ—เธญเธญเธเนเธฅเธเนเธชเธ”, เนเธฅเธฐเนเธ”เธเธเธญเธฃเนเธ”เธซเธฅเธฑเธเธเนเธฒเธ (Vercel Native)
 """
 
 import os
@@ -186,7 +186,7 @@ def verify_license(req: VerifyRequest, request: Request):
         return {
             "valid": False,
             "status": "INVALID_KEY",
-            "message": "❌ ไม่พบคีย์นี้ในระบบ กรุณาตรวจสอบความถูกต้อง"
+            "message": "โ เนเธกเนเธเธเธเธตเธขเนเธเธตเนเนเธเธฃเธฐเธเธ เธเธฃเธธเธ“เธฒเธ•เธฃเธงเธเธชเธญเธเธเธงเธฒเธกเธ–เธนเธเธ•เนเธญเธ"
         }
     
     key_data = dict(row)
@@ -198,7 +198,7 @@ def verify_license(req: VerifyRequest, request: Request):
         return {
             "valid": False,
             "status": key_data["status"],
-            "message": f"🚫 สิทธิ์การใช้งานถูกระงับ (สถานะ: {key_data['status']})"
+            "message": f"๐ซ เธชเธดเธ—เธเธดเนเธเธฒเธฃเนเธเนเธเธฒเธเธ–เธนเธเธฃเธฐเธเธฑเธ (เธชเธ–เธฒเธเธฐ: {key_data['status']})"
         }
     
     if now > expires_at:
@@ -208,7 +208,7 @@ def verify_license(req: VerifyRequest, request: Request):
         return {
             "valid": False,
             "status": "EXPIRED",
-            "message": f"⏳ สิทธิ์การใช้งานหมดอายุแล้วเมื่อ {key_data['expires_at']}"
+            "message": f"โณ เธชเธดเธ—เธเธดเนเธเธฒเธฃเนเธเนเธเธฒเธเธซเธกเธ”เธญเธฒเธขเธธเนเธฅเนเธงเน€เธกเธทเนเธญ {key_data['expires_at']}"
         }
     
     bound_hwid = (key_data.get("hwid_bound") or "").strip()
@@ -221,7 +221,7 @@ def verify_license(req: VerifyRequest, request: Request):
         return {
             "valid": False,
             "status": "HWID_MISMATCH",
-            "message": f"⚠️ คีย์นี้ถูกผูกไว้กับเครื่องอื่นแล้ว ({bound_hwid[:4]}****) กรุณาติดต่อแอดมินเพื่อย้ายเครื่อง"
+            "message": f"โ ๏ธ เธเธตเธขเนเธเธตเนเธ–เธนเธเธเธนเธเนเธงเนเธเธฑเธเน€เธเธฃเธทเนเธญเธเธญเธทเนเธเนเธฅเนเธง ({bound_hwid[:4]}****) เธเธฃเธธเธ“เธฒเธ•เธดเธ”เธ•เนเธญเนเธญเธ”เธกเธดเธเน€เธเธทเนเธญเธขเนเธฒเธขเน€เธเธฃเธทเนเธญเธ"
         }
     
     days_left = max(0, (expires_at - now).days)
@@ -236,7 +236,7 @@ def verify_license(req: VerifyRequest, request: Request):
         "days_left": days_left,
         "hours_left": hours_left,
         "hwid": bound_hwid,
-        "message": f"✅ สิทธิ์การใช้งานถูกต้อง (เหลือเวลา {days_left} วัน)"
+        "message": f"โ… เธชเธดเธ—เธเธดเนเธเธฒเธฃเนเธเนเธเธฒเธเธ–เธนเธเธ•เนเธญเธ (เน€เธซเธฅเธทเธญเน€เธงเธฅเธฒ {days_left} เธงเธฑเธ)"
     }
 
 @app.post("/api/v1/telemetry/heartbeat")
@@ -313,7 +313,7 @@ def admin_login(username: str = Form(...), password: str = Form(...)):
         conn.commit()
         conn.close()
         return {"success": True, "token": token}
-    return {"success": False, "message": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"}
+    return {"success": False, "message": "เธเธทเนเธญเธเธนเนเนเธเนเธซเธฃเธทเธญเธฃเธซเธฑเธชเธเนเธฒเธเนเธกเนเธ–เธนเธเธ•เนเธญเธ"}
 
 @app.get("/api/admin/overview")
 def admin_overview(token: str):
@@ -419,356 +419,415 @@ def admin_key_action(key_code: str = Form(...), action: str = Form(...), token: 
     return {"success": True}
 
 # -----------------------------------------------------------------------------
-# LUXURY ADMIN DASHBOARD HTML
+# ULTRA PREMIUM GOLD & BLACK ADMIN DASHBOARD
 # -----------------------------------------------------------------------------
-ADMIN_HTML = """
-<!DOCTYPE html>
+ADMIN_HTML = """<!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>👑 Mr.krit AI Ultra XXXX - Central Cloud Cockpit</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Prompt:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #07090e;
-            --bg-card: rgba(16, 23, 38, 0.75);
-            --border-glow: rgba(0, 242, 254, 0.2);
-            --accent-cyan: #00f2fe;
-            --accent-green: #00e676;
-            --accent-gold: #ffd700;
-            --accent-red: #ff3366;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', 'Prompt', sans-serif; }
-        body { background: radial-gradient(circle at top right, #101c38 0%, #07090e 100%); color: var(--text-primary); min-height: 100vh; }
-        
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 18px 36px; background: rgba(7, 9, 14, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border-glow); position: sticky; top: 0; z-index: 100; }
-        .logo-text { font-size: 20px; font-weight: 900; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; }
-        
-        .container { max-width: 1400px; margin: 30px auto; padding: 0 24px; }
-        
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 16px; padding: 22px; backdrop-filter: blur(12px); transition: 0.3s; position: relative; overflow: hidden; }
-        .stat-card:hover { transform: translateY(-4px); border-color: var(--accent-cyan); box-shadow: 0 10px 30px rgba(0, 242, 254, 0.15); }
-        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-cyan); }
-        .stat-card.green::before { background: var(--accent-green); }
-        .stat-card.gold::before { background: var(--accent-gold); }
-        .stat-label { font-size: 13px; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; }
-        .stat-val { font-size: 32px; font-weight: 900; margin-top: 8px; color: #fff; }
-        
-        /* Section Containers */
-        .panel { background: var(--bg-card); border: 1px solid var(--border-glow); border-radius: 18px; padding: 26px; backdrop-filter: blur(12px); margin-bottom: 30px; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .panel-title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        
-        /* Buttons */
-        .btn { padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
-        .btn-cyan { background: linear-gradient(135deg, #00f2fe, #4facfe); color: #000; font-weight: 700; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); }
-        .btn-cyan:hover { opacity: 0.9; transform: scale(1.02); }
-        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
-        .btn-red { background: rgba(255, 51, 102, 0.2); color: #ff3366; border: 1px solid #ff3366; }
-        .btn-red:hover { background: #ff3366; color: #fff; }
-        .btn-gray { background: rgba(255, 255, 255, 0.1); color: #fff; }
-        .btn-gray:hover { background: rgba(255, 255, 255, 0.2); }
-        
-        /* Tables */
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { padding: 14px; font-size: 12px; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        td { padding: 16px 14px; font-size: 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        tr:hover td { background: rgba(0, 242, 254, 0.03); }
-        
-        /* Badges */
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
-        .badge-online { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
-        .badge-offline { background: rgba(148, 163, 184, 0.15); color: var(--text-secondary); border: 1px solid rgba(148, 163, 184, 0.3); }
-        .badge-active { background: rgba(0, 242, 254, 0.15); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
-        .badge-banned { background: rgba(255, 51, 102, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
-        
-        /* Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-box { background: #0c1220; border: 1px solid var(--accent-cyan); border-radius: 20px; padding: 32px; width: 90%; max-width: 500px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8); }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600; }
-        .form-control { width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; color: #fff; font-size: 14px; outline: none; }
-        .form-control:focus { border-color: var(--accent-cyan); }
-        
-        /* Login Card */
-        #login-view { min-height: 80vh; display: flex; justify-content: center; align-items: center; }
-        .login-card { background: var(--bg-card); border: 1px solid var(--border-glow); padding: 40px; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); backdrop-filter: blur(15px); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>๐‘‘ MR.KRIT AI ULTRA โ€” Cloud Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --g1:#FFD700;--g2:#FFA500;--g3:#B8860B;--g4:#F5C518;
+  --gg:rgba(255,215,0,.35);--gs:rgba(255,215,0,.1);
+  --b1:#000;--b2:#0a0a0a;--b3:#111;--b4:#161616;--b5:#1c1c1c;
+  --tp:#F5F5F0;--ts:#9E9E8A;--tm:#4a4a3a;
+  --green:#00e676;--red:#ff3d5a;
+  --bor:rgba(255,215,0,.14);--borh:rgba(255,215,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--b1);color:var(--tp);font-family:'Outfit','Prompt',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 10% 0%,rgba(255,215,0,.05) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 90% 100%,rgba(255,165,0,.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+/* NAVBAR */
+.navbar{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:68px;background:rgba(0,0,0,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--bor)}
+.navbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g1),transparent)}
+.nav-brand{display:flex;align-items:center;gap:14px}
+.nav-crown{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 16px var(--gg)}
+.nav-title{font-size:16px;font-weight:800;letter-spacing:1.5px;background:linear-gradient(135deg,var(--g1),var(--g4),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-subtitle{font-size:10px;letter-spacing:3px;color:var(--tm);font-weight:500;text-transform:uppercase;margin-top:1px}
+.nav-right{display:flex;align-items:center;gap:12px}
+.live-ind{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--g1);font-weight:600}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--g1);box-shadow:0 0 8px var(--g1),0 0 16px var(--gg);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 68px)}
+
+/* SIDEBAR */
+.sidebar{width:240px;flex-shrink:0;background:var(--b2);border-right:1px solid var(--bor);padding:28px 16px;display:flex;flex-direction:column;gap:6px;position:sticky;top:68px;height:calc(100vh - 68px);overflow-y:auto}
+.sidebar-label{font-size:10px;font-weight:700;letter-spacing:2.5px;color:var(--tm);text-transform:uppercase;padding:0 12px;margin:14px 0 6px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:10px;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .2s;color:var(--ts);border:1px solid transparent}
+.nav-item:hover{background:var(--gs);color:var(--g1);border-color:var(--bor)}
+.nav-item.active{background:linear-gradient(135deg,rgba(255,215,0,.16),rgba(255,165,0,.07));color:var(--g1);font-weight:700;border-color:rgba(255,215,0,.28);box-shadow:0 0 12px rgba(255,215,0,.07)}
+.nav-icon{font-size:16px;width:22px;text-align:center}
+.sidebar-bottom{margin-top:auto}
+.btn-logout{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:10px;border:1px solid rgba(255,61,90,.3);background:rgba(255,61,90,.07);color:#ff3d5a;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif}
+.btn-logout:hover{background:rgba(255,61,90,.2);border-color:#ff3d5a}
+
+/* MAIN */
+.main{flex:1;padding:32px 36px;overflow-x:hidden}
+.page-header{margin-bottom:30px}
+.page-header h1{font-size:26px;font-weight:800}
+.page-header h1 span{color:var(--g1)}
+.breadcrumb{font-size:11px;color:var(--tm);margin-top:5px;letter-spacing:1.5px}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px}
+.stat-card{background:var(--b3);border:1px solid var(--bor);border-radius:16px;padding:22px 24px;position:relative;overflow:hidden;transition:all .3s}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g1),transparent);opacity:0;transition:opacity .3s}
+.stat-card:hover{border-color:var(--borh);transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,215,0,.09)}
+.stat-card:hover::before{opacity:1}
+.stat-bg{position:absolute;right:-10px;bottom:-10px;font-size:80px;opacity:.04;line-height:1}
+.stat-label{font-size:10.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tm)}
+.stat-value{font-size:36px;font-weight:900;margin:10px 0 4px;letter-spacing:-1px}
+.stat-value.gold{color:var(--g1);text-shadow:0 0 20px var(--gg)}
+.stat-value.green{color:var(--green)}
+.stat-sub{font-size:12px;color:var(--tm)}
+.stat-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--gs);color:var(--g1);border:1px solid rgba(255,215,0,.22)}
+
+/* PANEL */
+.panel{background:var(--b3);border:1px solid var(--bor);border-radius:18px;overflow:hidden;margin-bottom:24px}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:20px 26px;border-bottom:1px solid var(--bor);background:rgba(255,215,0,.02)}
+.ph-left{display:flex;align-items:center;gap:12px}
+.panel-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,rgba(255,215,0,.18),rgba(255,165,0,.08));border:1px solid rgba(255,215,0,.22);display:flex;align-items:center;justify-content:center;font-size:16px}
+.panel-title{font-size:15px;font-weight:700}
+.panel-sub{font-size:11px;color:var(--tm);margin-top:2px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;font-family:'Outfit',sans-serif}
+.btn-gold{background:linear-gradient(135deg,var(--g1),var(--g2));color:#000;box-shadow:0 4px 16px rgba(255,215,0,.32)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(255,215,0,.5);filter:brightness(1.05)}
+.btn-out{background:transparent;color:var(--g1);border:1px solid rgba(255,215,0,.32)}
+.btn-out:hover{background:var(--gs);border-color:var(--g1)}
+.btn-dan{background:rgba(255,61,90,.09);color:var(--red);border:1px solid rgba(255,61,90,.28)}
+.btn-dan:hover{background:rgba(255,61,90,.22);border-color:var(--red)}
+.btn-act{background:rgba(0,230,118,.09);color:var(--green);border:1px solid rgba(0,230,118,.28)}
+.btn-sm{padding:6px 13px;font-size:11.5px;border-radius:7px}
+.btn-xs{padding:4px 10px;font-size:11px;border-radius:6px}
+
+/* TABLE */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{padding:13px 16px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tm);border-bottom:1px solid var(--bor);white-space:nowrap;background:rgba(0,0,0,.3)}
+tbody td{padding:15px 16px;font-size:13.5px;border-bottom:1px solid rgba(255,215,0,.04)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,215,0,.025)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700}
+.bdot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.b-on{background:rgba(0,230,118,.11);color:var(--green);border:1px solid rgba(0,230,118,.28)}
+.b-off{background:rgba(74,74,58,.18);color:var(--tm);border:1px solid rgba(74,74,58,.28)}
+.b-act{background:rgba(255,215,0,.11);color:var(--g1);border:1px solid rgba(255,215,0,.28)}
+.b-exp{background:rgba(255,165,0,.11);color:#FFA500;border:1px solid rgba(255,165,0,.28)}
+.b-ban{background:rgba(255,61,90,.11);color:var(--red);border:1px solid rgba(255,61,90,.28)}
+
+/* EMPTY */
+.empty{text-align:center;padding:50px 20px;color:var(--tm)}
+.empty-icon{font-size:44px;margin-bottom:12px;opacity:.45}
+.empty p{font-size:14px}
+
+/* LOGIN */
+#login-view{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:#000}
+#login-view::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(255,215,0,.055) 0%,transparent 70%)}
+.lc{position:relative;width:430px;max-width:95vw}
+.l-logo{text-align:center;margin-bottom:36px}
+.l-crown{width:68px;height:68px;border-radius:20px;margin:0 auto 16px;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 40px rgba(255,215,0,.38),0 0 80px rgba(255,215,0,.13);animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.l-title{font-size:23px;font-weight:900;letter-spacing:1px}
+.l-title span{background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.l-desc{font-size:13px;color:var(--tm);margin-top:6px}
+.l-card{background:var(--b3);border:1px solid rgba(255,215,0,.18);border-radius:22px;padding:36px;box-shadow:0 24px 80px rgba(0,0,0,.8)}
+.fg{margin-bottom:20px}
+.fl{display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tm);margin-bottom:8px}
+.fi{width:100%;padding:13px 16px;background:var(--b5);border:1px solid rgba(255,215,0,.13);border-radius:11px;color:var(--tp);font-size:14px;outline:none;transition:all .2s;font-family:'Outfit',sans-serif}
+.fi:focus{border-color:rgba(255,215,0,.48);box-shadow:0 0 0 3px rgba(255,215,0,.07)}
+.fi::placeholder{color:var(--tm)}
+.l-btn{width:100%;padding:14px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#000;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:1px;transition:all .25s;box-shadow:0 4px 20px rgba(255,215,0,.38);margin-top:8px;font-family:'Outfit',sans-serif}
+.l-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,215,0,.52);filter:brightness(1.05)}
+.l-foot{text-align:center;margin-top:20px;font-size:12px;color:var(--tm)}
+
+/* MODAL */
+.mover{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.86);backdrop-filter:blur(10px);align-items:center;justify-content:center}
+.mbox{background:var(--b3);border:1px solid rgba(255,215,0,.22);border-radius:22px;padding:36px;width:95%;max-width:500px;box-shadow:0 30px 80px rgba(0,0,0,.9);position:relative}
+.mtitle{font-size:19px;font-weight:800;color:var(--g1);margin-bottom:24px}
+.mclose{position:absolute;top:18px;right:20px;background:none;border:none;color:var(--tm);font-size:22px;cursor:pointer;transition:color .2s}
+.mclose:hover{color:var(--red)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--b2)}
+::-webkit-scrollbar-thumb{background:var(--g3);border-radius:10px}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .4s ease forwards}
+
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.sidebar{display:none}.main{padding:20px 16px}.stats-grid{grid-template-columns:1fr 1fr;gap:12px}.navbar{padding:0 16px}}
+</style>
 </head>
 <body>
 
-    <div class="navbar">
-        <div class="logo-text">👑 MR.KRIT AI ULTRA • CLOUD HUB</div>
-        <div id="nav-user" style="display: none;">
-            <button class="btn btn-gray btn-sm" onclick="logout()">🚪 ออกจากระบบ</button>
-        </div>
+<!-- LOGIN -->
+<div id="login-view">
+  <div class="lc">
+    <div class="l-logo">
+      <div class="l-crown">๐‘‘</div>
+      <div class="l-title"><span>MR.KRIT AI ULTRA</span></div>
+      <div class="l-desc">Central Cloud Command Center ยท Restricted Access</div>
+    </div>
+    <div class="l-card">
+      <div class="fg"><label class="fl">Username</label><input type="text" id="login-user" class="fi" placeholder="Enter username" value="admin"></div>
+      <div class="fg"><label class="fl">Password</label><input type="password" id="login-pass" class="fi" placeholder="โ€ขโ€ขโ€ขโ€ขโ€ขโ€ขโ€ขโ€ขโ€ขโ€ข" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="l-btn" onclick="doLogin()" id="login-btn">๐” ACCESS SYSTEM</button>
+      <div id="login-err" style="color:#ff3d5a;font-size:13px;text-align:center;margin-top:14px;display:none;"></div>
+    </div>
+    <div class="l-foot">๐”’ Encrypted Session ยท Gold Tier Security</div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="main-nav" style="display:none">
+  <div class="nav-brand">
+    <div class="nav-crown">๐‘‘</div>
+    <div><div class="nav-title">MR.KRIT AI ULTRA ยท CLOUD HUB</div><div class="nav-subtitle">Command Center v2.0</div></div>
+  </div>
+  <div class="nav-right">
+    <div class="live-ind"><div class="live-dot"></div> LIVE MONITORING</div>
+    <button class="btn btn-out btn-sm" onclick="fetchDash()" style="margin-left:16px">๐” Refresh</button>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout" id="main-layout" style="display:none">
+  <aside class="sidebar">
+    <div class="sidebar-label">Main Menu</div>
+    <div class="nav-item active"><span class="nav-icon">๐ </span> Overview</div>
+    <div class="nav-item"><span class="nav-icon">๐ฐ๏ธ</span> Bot Radar</div>
+    <div class="nav-item"><span class="nav-icon">๐”‘</span> License Keys</div>
+    <div class="sidebar-label">System</div>
+    <div class="nav-item" onclick="fetchDash()"><span class="nav-icon">๐”</span> Sync Data</div>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="doLogout()">๐ช Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header fu">
+      <h1>Command <span>Overview</span></h1>
+      <div class="breadcrumb">DASHBOARD ยท OVERVIEW ยท REAL-TIME</div>
     </div>
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-view">
-        <div class="login-card">
-            <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px; color: #fff;">👑 Admin Master Login</h2>
-            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">เข้าสู่ระบบศูนย์กลางเพื่อตรวจสอบบอทและจัดการสิทธิ์</p>
-            <div class="form-group">
-                <label>ชื่อผู้ใช้ (Username)</label>
-                <input type="text" id="login-user" class="form-control" placeholder="admin" value="admin">
-            </div>
-            <div class="form-group">
-                <label>รหัสผ่าน (Password)</label>
-                <input type="password" id="login-pass" class="form-control" placeholder="••••••••" value="mrkrit8888">
-            </div>
-            <button class="btn btn-cyan" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="handleLogin()">🚀 เข้าสู่ระบบเซิร์ฟเวอร์</button>
-        </div>
+    <div class="stats-grid fu">
+      <div class="stat-card"><div class="stat-bg">๐ฐ๏ธ</div><div class="stat-label">Active Live Bots</div><div class="stat-value green" id="s-online">0</div><div class="stat-sub">Bots reporting in real-time</div></div>
+      <div class="stat-card"><div class="stat-bg">๐”‘</div><div class="stat-label">Active License Keys</div><div class="stat-value gold" id="s-keys">0/0</div><div class="stat-sub">Active / Total issued</div></div>
+      <div class="stat-card"><div class="stat-bg">๐’ฐ</div><div class="stat-label">Total Portfolio Balance</div><div class="stat-value gold" id="s-bal">$0.00</div><div class="stat-sub">Combined live balance</div></div>
+      <div class="stat-card"><div class="stat-bg">๐“</div><div class="stat-label">Today's Total Profit</div><div class="stat-value" id="s-prof" style="color:var(--green)">$0.00</div><div class="stat-sub">Profit across all accounts</div></div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
-    <div id="dash-view" class="container" style="display: none;">
-        
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card green">
-                <div class="stat-label">🟢 บอทออนไลน์สด (Active Live Bots)</div>
-                <div class="stat-val" id="stat-online">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">🔑 คีย์ทั้งหมดที่เปิดใช้งาน (Active Keys)</div>
-                <div class="stat-val" id="stat-keys">0</div>
-            </div>
-            <div class="stat-card gold">
-                <div class="stat-label">💰 พอร์ตรวมทั้งหมด (Total Live Balance)</div>
-                <div class="stat-val" id="stat-balance">$0.00</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">📈 กำไรรวมวันนี้ (Today's Profit)</div>
-                <div class="stat-val" id="stat-profit">$0.00</div>
-            </div>
+    <!-- BOT RADAR PANEL -->
+    <div class="panel fu">
+      <div class="panel-header">
+        <div class="ph-left">
+          <div class="panel-icon">๐ฐ๏ธ</div>
+          <div><div class="panel-title">Real-Time Bot Telemetry Radar</div><div class="panel-sub">เธเธญเธ—เธ—เธตเนเธญเธญเธเนเธฅเธเนเธชเธ”เนเธฅเธฐเธชเนเธเธชเธฑเธเธเธฒเธ“เน€เธเนเธฒเธกเธฒเธฅเนเธฒเธชเธธเธ”</div></div>
         </div>
-
-        <!-- Live Bot Radar Panel -->
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">🛰️ เรดาร์ตรวจจับบอทสด (Real-Time Bot Telemetry Radar)</div>
-                <button class="btn btn-gray btn-sm" onclick="fetchDashboard()">🔄 รีเฟรชข้อมูล</button>
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>สถานะ</th>
-                            <th>บัญชี MT5</th>
-                            <th>โบรกเกอร์ / Server</th>
-                            <th>ยอด Balance / Equity</th>
-                            <th>กำไรวันนี้</th>
-                            <th>ออเดอร์ค้าง</th>
-                            <th>HWID เครื่อง</th>
-                            <th>สัญญาณล่าสุด</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bot-table-body">
-                        <tr><td colspan="8" style="text-align: center; color: var(--text-secondary);">กำลังค้นหาการเชื่อมต่อ...</td></tr>
-                    </tbody>
-                </table>
-            </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="stat-badge" id="bot-badge">0 Online</div>
+          <button class="btn btn-out btn-sm" onclick="fetchDash()">๐” Refresh</button>
         </div>
-
-        <!-- License Keys Panel -->
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">🔑 ระบบจัดการสิทธิ์การใช้งาน (License Keys Master Management)</div>
-                <button class="btn btn-cyan" onclick="openKeyModal()">➕ สร้างคีย์ใหม่ (Generate Key)</button>
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>รหัสคีย์ (License Key)</th>
-                            <th>ชื่อลูกค้า / ผู้ใช้</th>
-                            <th>สถานะสิทธิ์</th>
-                            <th>เครื่องที่ผูก (HWID)</th>
-                            <th>วันหมดอายุ</th>
-                            <th>จัดการคำสั่ง</th>
-                        </tr>
-                    </thead>
-                    <tbody id="key-table-body">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>Status</th><th>MT5 Account</th><th>Broker / Server</th><th>Balance / Equity</th><th>Today Profit</th><th>Open Orders</th><th>HWID Machine</th><th>Last Signal</th></tr></thead>
+        <tbody id="bot-tb"><tr><td colspan="8"><div class="empty"><div class="empty-icon">๐“ก</div><p>No bots connected at this time</p></div></td></tr></tbody>
+      </table></div>
     </div>
 
-    <!-- MODAL: CREATE KEY -->
-    <div id="key-modal" class="modal-overlay">
-        <div class="modal-box">
-            <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 18px;">➕ สร้างรหัสสิทธิ์การใช้งานใหม่ (New License)</h3>
-            <div class="form-group">
-                <label>ชื่อลูกค้า (Customer Name)</label>
-                <input type="text" id="new-cust-name" class="form-control" placeholder="เช่น คุณสมชาย (VIP)">
-            </div>
-            <div class="form-group">
-                <label>ระยะเวลาสิทธิ์ (Duration)</label>
-                <select id="new-duration" class="form-control">
-                    <option value="7">7 วัน (ทดลองใช้งาน Trial)</option>
-                    <option value="30" selected>30 วัน (1 เดือน)</option>
-                    <option value="90">90 วัน (3 เดือน)</option>
-                    <option value="365">365 วัน (1 ปี)</option>
-                    <option value="29000">ตลอดชีพ (Lifetime VIP)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>บันทึกช่วยจำ (Notes)</label>
-                <input type="text" id="new-notes" class="form-control" placeholder="เช่น ชำระเงินแล้วทางไลน์">
-            </div>
-            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px;">
-                <button class="btn btn-gray" onclick="closeKeyModal()">ยกเลิก</button>
-                <button class="btn btn-cyan" onclick="submitCreateKey()">✨ ยืนยันสร้างคีย์</button>
-            </div>
+    <!-- LICENSE KEYS PANEL -->
+    <div class="panel fu">
+      <div class="panel-header">
+        <div class="ph-left">
+          <div class="panel-icon">๐”‘</div>
+          <div><div class="panel-title">License Keys Master Management</div><div class="panel-sub">เธฃเธฐเธเธเธญเธญเธเธเธตเธขเน เธเธฑเธ”เธเธฒเธฃเธชเธดเธ—เธเธดเน เนเธฅเธฐเธเธงเธเธเธธเธกเธฅเธนเธเธเนเธฒ</div></div>
         </div>
+        <button class="btn btn-gold" onclick="openKM()">โฆ Generate New Key</button>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>License Key</th><th>Customer / User</th><th>Status</th><th>HWID Bound</th><th>Expiry Date</th><th>Actions</th></tr></thead>
+        <tbody id="key-tb"></tbody>
+      </table></div>
     </div>
+  </main>
+</div>
 
-    <script>
-        let adminToken = localStorage.getItem('mrkrit_admin_token') || '';
+<!-- MODAL: GENERATE KEY -->
+<div id="km" class="mover">
+  <div class="mbox">
+    <button class="mclose" onclick="closeKM()">โ•</button>
+    <div class="mtitle">โฆ Generate New License Key</div>
+    <div class="fg"><label class="fl">Customer Name</label><input type="text" id="kn" class="fi" placeholder="เน€เธเนเธ เธเธธเธ“เธชเธกเธเธฒเธข โ€” VIP Client"></div>
+    <div class="fg"><label class="fl">License Duration</label>
+      <select id="kd" class="fi">
+        <option value="7">7 Days โ€” Trial</option>
+        <option value="30" selected>30 Days โ€” 1 Month</option>
+        <option value="90">90 Days โ€” 3 Months</option>
+        <option value="180">180 Days โ€” 6 Months</option>
+        <option value="365">365 Days โ€” 1 Year</option>
+        <option value="29000">Lifetime โ€” VIP Unlimited</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Notes (Optional)</label><input type="text" id="knt" class="fi" placeholder="เน€เธเนเธ เธเธณเธฃเธฐเนเธฅเนเธงเธ—เธฒเธเนเธฅเธเน"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:26px">
+      <button class="btn btn-out" onclick="closeKM()">Cancel</button>
+      <button class="btn btn-gold" onclick="createKey()">โฆ Confirm & Generate</button>
+    </div>
+  </div>
+</div>
 
-        function checkAuth() {
-            if (adminToken) {
-                document.getElementById('login-view').style.display = 'none';
-                document.getElementById('dash-view').style.display = 'block';
-                document.getElementById('nav-user').style.display = 'block';
-                fetchDashboard();
-                setInterval(fetchDashboard, 15000);
-            } else {
-                document.getElementById('login-view').style.display = 'flex';
-                document.getElementById('dash-view').style.display = 'none';
-                document.getElementById('nav-user').style.display = 'none';
-            }
-        }
+<!-- MODAL: RESULT -->
+<div id="rm" class="mover">
+  <div class="mbox" style="max-width:460px;text-align:center">
+    <button class="mclose" onclick="closeRM()">โ•</button>
+    <div style="font-size:48px;margin-bottom:14px">โฆ</div>
+    <div style="font-size:18px;font-weight:800;color:var(--g1);margin-bottom:8px">Key Generated Successfully!</div>
+    <div style="font-size:12px;color:var(--tm);margin-bottom:20px">Copy and send this key to your customer</div>
+    <div style="background:var(--b5);border:1px solid rgba(255,215,0,.28);border-radius:12px;padding:18px 20px;margin-bottom:20px">
+      <div id="rk" style="font-size:14px;font-weight:800;color:var(--g1);letter-spacing:1.5px;word-break:break-all"></div>
+      <div id="re" style="font-size:12px;color:var(--tm);margin-top:8px"></div>
+    </div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center" onclick="copyK()">๐“ Copy Key to Clipboard</button>
+  </div>
+</div>
 
-        async function handleLogin() {
-            const u = document.getElementById('login-user').value;
-            const p = document.getElementById('login-pass').value;
-            const fd = new FormData();
-            fd.append('username', u);
-            fd.append('password', p);
-            
-            try {
-                const res = await fetch('/api/admin/login', { method: 'POST', body: fd });
-                const data = await res.json();
-                if (data.success) {
-                    adminToken = data.token;
-                    localStorage.setItem('mrkrit_admin_token', adminToken);
-                    checkAuth();
-                } else {
-                    alert(data.message || 'รหัสผ่านไม่ถูกต้อง');
-                }
-            } catch(e) {
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์');
-            }
-        }
+<script>
+let tok = localStorage.getItem('mka_tok') || '';
+let lastKey = '';
 
-        function logout() {
-            localStorage.removeItem('mrkrit_admin_token');
-            adminToken = '';
-            checkAuth();
-        }
+function checkAuth() {
+  if (tok) {
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('main-nav').style.display = 'flex';
+    document.getElementById('main-layout').style.display = 'flex';
+    fetchDash();
+    setInterval(fetchDash, 15000);
+  } else {
+    document.getElementById('login-view').style.display = 'flex';
+    document.getElementById('main-nav').style.display = 'none';
+    document.getElementById('main-layout').style.display = 'none';
+  }
+}
 
-        async function fetchDashboard() {
-            if (!adminToken) return;
-            try {
-                const res = await fetch(`/api/admin/overview?token=${adminToken}`);
-                if (res.status === 401) { logout(); return; }
-                const data = await res.json();
-                
-                // Stats
-                document.getElementById('stat-online').innerText = data.stats.online_bots;
-                document.getElementById('stat-keys').innerText = `${data.stats.active_keys} / ${data.stats.total_keys}`;
-                document.getElementById('stat-balance').innerText = `$${data.stats.total_balance.toLocaleString()}`;
-                document.getElementById('stat-profit').innerText = `$${data.stats.total_profit.toLocaleString()}`;
+async function doLogin() {
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-err');
+  const u = document.getElementById('login-user').value;
+  const p = document.getElementById('login-pass').value;
+  btn.disabled = true; btn.textContent = 'Authenticating...'; err.style.display = 'none';
+  const fd = new FormData(); fd.append('username', u); fd.append('password', p);
+  try {
+    const r = await fetch('/api/admin/login', {method:'POST', body:fd});
+    const d = await r.json();
+    if (d.success) { tok = d.token; localStorage.setItem('mka_tok', tok); checkAuth(); }
+    else { err.textContent = 'โ  ' + (d.message || 'Invalid credentials.'); err.style.display = 'block'; btn.disabled = false; btn.textContent = '๐” ACCESS SYSTEM'; }
+  } catch(e) { err.textContent = 'โ  Cannot connect to server.'; err.style.display = 'block'; btn.disabled = false; btn.textContent = '๐” ACCESS SYSTEM'; }
+}
 
-                // Bots Table
-                const botTbody = document.getElementById('bot-table-body');
-                if (data.bots.length === 0) {
-                    botTbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 25px;">ยังไม่มีบอทเชื่อมต่อเข้ามาในขณะนี้</td></tr>`;
-                } else {
-                    botTbody.innerHTML = data.bots.map(b => `
-                        <tr>
-                            <td><span class="badge ${b.is_online ? 'badge-online' : 'badge-offline'}">${b.is_online ? '🟢 ออนไลน์' : '⚪ ออฟไลน์'}</span></td>
-                            <td style="font-weight: 700;">#${b.account_login || 'N/A'}</td>
-                            <td>${b.broker_server || 'N/A'}</td>
-                            <td><strong>$${b.balance.toLocaleString()}</strong> <span style="color: #94a3b8; font-size: 12px;">(Eq: $${b.equity.toLocaleString()})</span></td>
-                            <td style="color: ${b.profit_today >= 0 ? '#00e676' : '#ff3366'}; font-weight: 700;">${b.profit_today >= 0 ? '+' : ''}$${b.profit_today.toFixed(2)}</td>
-                            <td><span class="badge badge-active">${b.open_orders} ไม้</span></td>
-                            <td><code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">${b.hwid}</code></td>
-                            <td style="color: #94a3b8; font-size: 12px;">${b.last_seen_sec} วินาทีที่แล้ว</td>
-                        </tr>
-                    `).join('');
-                }
+function doLogout() { localStorage.removeItem('mka_tok'); tok = ''; checkAuth(); }
 
-                // Keys Table
-                const keyTbody = document.getElementById('key-table-body');
-                keyTbody.innerHTML = data.keys.map(k => `
-                    <tr>
-                        <td><strong style="color: #00f2fe; letter-spacing: 0.5px;">${k.key_code}</strong></td>
-                        <td>${k.customer_name} ${k.notes ? `<span style="color: #94a3b8; font-size: 12px;">(${k.notes})</span>` : ''}</td>
-                        <td><span class="badge ${k.status === 'ACTIVE' ? 'badge-active' : (k.status === 'BANNED' ? 'badge-banned' : 'badge-offline')}">${k.status}</span></td>
-                        <td>${k.hwid_bound ? `<code style="color: #00e676;">${k.hwid_bound}</code>` : '<span style="color: #94a3b8;">(ยังไม่ผูกเครื่อง)</span>'}</td>
-                        <td style="font-size: 13px;">${k.expires_at}</td>
-                        <td>
-                            <div style="display: flex; gap: 6px;">
-                                ${k.hwid_bound ? `<button class="btn btn-gray btn-sm" onclick="keyAction('${k.key_code}', 'RESET_HWID')">🔄 ปลดล็อค HWID</button>` : ''}
-                                <button class="btn btn-gray btn-sm" onclick="keyAction('${k.key_code}', 'EXTEND_30D')">+30 วัน</button>
-                                ${k.status === 'ACTIVE' ? `<button class="btn btn-red btn-sm" onclick="keyAction('${k.key_code}', 'BAN')">🚫 ระงับคีย์</button>` : `<button class="btn btn-cyan btn-sm" onclick="keyAction('${k.key_code}', 'ACTIVATE')">✅ เปิดใช้งาน</button>`}
-                            </div>
-                        </td>
-                    </tr>
-                `).join('');
+async function fetchDash() {
+  if (!tok) return;
+  try {
+    const r = await fetch('/api/admin/overview?token=' + tok);
+    if (r.status === 401) { doLogout(); return; }
+    const d = await r.json();
+    const ob = d.stats.online_bots;
+    document.getElementById('s-online').textContent = ob;
+    document.getElementById('s-keys').textContent = d.stats.active_keys + '/' + d.stats.total_keys;
+    document.getElementById('s-bal').textContent = '$' + d.stats.total_balance.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    const pe = document.getElementById('s-prof');
+    pe.textContent = (d.stats.total_profit >= 0 ? '+' : '') + '$' + Math.abs(d.stats.total_profit).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    pe.style.color = d.stats.total_profit >= 0 ? 'var(--green)' : 'var(--red)';
+    document.getElementById('bot-badge').textContent = ob + ' Online';
 
-            } catch(e) { console.error(e); }
-        }
+    const bt = document.getElementById('bot-tb');
+    if (!d.bots.length) {
+      bt.innerHTML = '<tr><td colspan="8"><div class="empty"><div class="empty-icon">๐“ก</div><p>No bots connected at this time</p></div></td></tr>';
+    } else {
+      bt.innerHTML = d.bots.map(b => `<tr>
+        <td><span class="badge ${b.is_online?'b-on':'b-off'}"><span class="bdot"></span>${b.is_online?'ONLINE':'OFFLINE'}</span></td>
+        <td><strong style="color:var(--g1)">#${b.account_login||'N/A'}</strong></td>
+        <td style="color:var(--ts);font-size:13px">${b.broker_server||'N/A'}</td>
+        <td><strong>$${b.balance.toLocaleString()}</strong> <span style="color:var(--tm);font-size:12px">/ $${b.equity.toLocaleString()}</span></td>
+        <td style="color:${b.profit_today>=0?'var(--green)':'var(--red)'};font-weight:700">${b.profit_today>=0?'+':''}$${b.profit_today.toFixed(2)}</td>
+        <td><span class="badge b-act">${b.open_orders} orders</span></td>
+        <td><code style="background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.14);padding:3px 8px;border-radius:6px;font-size:12px;color:var(--g1)">${b.hwid.substring(0,12)}...</code></td>
+        <td style="color:var(--tm);font-size:12px">${b.last_seen_sec}s ago</td>
+      </tr>`).join('');
+    }
 
-        async function keyAction(keyCode, action) {
-            if (action === 'BAN' && !confirm('คุณแน่ใจหรือไม่ว่าต้องการระงับสิทธิ์คีย์นี้ทันที?')) return;
-            const fd = new FormData();
-            fd.append('key_code', keyCode);
-            fd.append('action', action);
-            fd.append('token', adminToken);
-            await fetch('/api/admin/keys/action', { method: 'POST', body: fd });
-            fetchDashboard();
-        }
+    const kt = document.getElementById('key-tb');
+    kt.innerHTML = d.keys.map(k => `<tr>
+      <td><strong style="color:var(--g1);font-size:13px;letter-spacing:.8px">${k.key_code}</strong></td>
+      <td><div style="font-weight:600">${k.customer_name}</div>${k.notes?'<div style="color:var(--tm);font-size:12px">'+k.notes+'</div>':''}</td>
+      <td><span class="badge ${k.status==='ACTIVE'?'b-act':k.status==='BANNED'?'b-ban':k.status==='EXPIRED'?'b-exp':'b-off'}"><span class="bdot"></span>${k.status}</span></td>
+      <td style="font-size:12px">${k.hwid_bound?'<code style="color:var(--green);background:rgba(0,230,118,.07);padding:2px 7px;border-radius:5px">'+k.hwid_bound.substring(0,16)+'...</code>':'<span style="color:var(--tm)">Not bound yet</span>'}</td>
+      <td style="font-size:12.5px;color:var(--ts)">${k.expires_at}</td>
+      <td><div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${k.hwid_bound?'<button class="btn btn-out btn-xs" onclick="ka(\''+k.key_code+'\',\'RESET_HWID\')">๐” Reset HWID</button>':''}
+        <button class="btn btn-out btn-xs" onclick="ka('${k.key_code}','EXTEND_30D')">+30d</button>
+        ${k.status==='ACTIVE'?'<button class="btn btn-dan btn-xs" onclick="ka(\''+k.key_code+'\',\'BAN\')">๐ซ Ban</button>':'<button class="btn btn-act btn-xs" onclick="ka(\''+k.key_code+'\',\'ACTIVATE\')">โ… Activate</button>'}
+      </div></td>
+    </tr>`).join('');
+  } catch(e) { console.error(e); }
+}
 
-        function openKeyModal() { document.getElementById('key-modal').style.display = 'flex'; }
-        function closeKeyModal() { document.getElementById('key-modal').style.display = 'none'; }
+async function ka(kc, action) {
+  if (action === 'BAN' && !confirm('Confirm BAN this license? Bot will stop immediately.')) return;
+  const fd = new FormData(); fd.append('key_code',kc); fd.append('action',action); fd.append('token',tok);
+  await fetch('/api/admin/keys/action',{method:'POST',body:fd});
+  fetchDash();
+}
 
-        async function submitCreateKey() {
-            const name = document.getElementById('new-cust-name').value;
-            const duration = parseInt(document.getElementById('new-duration').value);
-            const notes = document.getElementById('new-notes').value;
-            if (!name) { alert('กรุณากรอกชื่อลูกค้า'); return; }
+function openKM() { document.getElementById('km').style.display = 'flex'; }
+function closeKM() { document.getElementById('km').style.display = 'none'; }
+function closeRM() { document.getElementById('rm').style.display = 'none'; }
 
-            const res = await fetch(`/api/admin/keys/create?token=${adminToken}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ customer_name: name, duration_days: duration, notes: notes })
-            });
-            const data = await res.json();
-            if (data.success) {
-                alert(`✨ สร้างคีย์สำเร็จ!\\nรหัสคีย์: ${data.key_code}\\nหมดอายุ: ${data.expires_at}`);
-                closeKeyModal();
-                fetchDashboard();
-            }
-        }
+async function createKey() {
+  const n = document.getElementById('kn').value.trim();
+  const dur = parseInt(document.getElementById('kd').value);
+  const nt = document.getElementById('knt').value.trim();
+  if (!n) { alert('Please enter customer name.'); return; }
+  const r = await fetch('/api/admin/keys/create?token='+tok, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({customer_name:n,duration_days:dur,notes:nt})});
+  const data = await r.json();
+  if (data.success) {
+    lastKey = data.key_code;
+    closeKM();
+    document.getElementById('rk').textContent = data.key_code;
+    document.getElementById('re').textContent = 'Expires: ' + data.expires_at;
+    document.getElementById('rm').style.display = 'flex';
+    fetchDash();
+  }
+}
 
-        checkAuth();
-    </script>
+function copyK() {
+  navigator.clipboard.writeText(lastKey).then(() => {
+    const b = document.querySelector('#rm .btn-gold');
+    b.textContent = 'โ… Copied!';
+    setTimeout(() => { b.textContent = '๐“ Copy Key to Clipboard'; }, 2000);
+  });
+}
+
+checkAuth();
+</script>
 </body>
-</html>
-"""
+</html>"""
 
 @app.get("/admin", response_class=HTMLResponse)
+@app.get("/api/index/admin", response_class=HTMLResponse)
 def get_admin_portal():
     return HTMLResponse(content=ADMIN_HTML)
+
