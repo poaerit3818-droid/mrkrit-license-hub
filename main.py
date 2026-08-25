@@ -26,7 +26,12 @@ from pydantic import BaseModel
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "mrkrit8888")
 SECRET_TOKEN_KEY = os.getenv("SECRET_TOKEN_KEY", "MR_KRIT_ULTRA_SECURITY_SECRET_2026")
-DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "central_hub.db")
+
+# On Vercel serverless, only /tmp is writable
+if os.environ.get("VERCEL"):
+    DB_FILE = "/tmp/central_hub.db"
+else:
+    DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "central_hub.db")
 
 app = FastAPI(
     title="Mr.krit AI Central Cloud Gateway",
