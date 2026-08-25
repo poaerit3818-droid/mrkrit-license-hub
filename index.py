@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-👑 MR.KRIT AI ULTRA • MASTER CLOUD COMMAND CENTER
+👑 MR.KRIT AI ULTRA • MASTER CLOUD COMMAND CENTER (4K/12K INSTITUTIONAL)
 =============================================================================
 ระบบศูนย์กลางจัดการคีย์ผลิตภัณฑ์ และศูนย์บัญชาการตรวจจับอุปกรณ์สด (Vercel Native)
 """
@@ -19,20 +19,16 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# -----------------------------------------------------------------------------
-# CONFIGURATION & DATABASE (Vercel Serverless Compatible Path)
-# -----------------------------------------------------------------------------
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "mrkrit8888")
 SECRET_TOKEN_KEY = os.getenv("SECRET_TOKEN_KEY", "MR_KRIT_ULTRA_SECURITY_SECRET_2026")
 
-# In Vercel serverless environment, /tmp is writable
 DB_FILE = "/tmp/central_hub.db" if os.environ.get("VERCEL") else os.path.join(os.path.dirname(os.path.abspath(__file__)), "central_hub.db")
 
 app = FastAPI(
     title="Mr.krit AI Central Cloud Gateway",
-    version="3.0.0",
-    description="Central License & Live Telemetry Hub"
+    version="3.5.0",
+    description="Central License & Academic Device Radar Hub"
 )
 
 app.add_middleware(
@@ -69,7 +65,7 @@ def init_db():
             )
         """)
         
-        # Table: Bot Telemetry / Active Sessions
+        # Table: Bot Telemetry
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS bot_telemetry (
                 hwid TEXT PRIMARY KEY,
@@ -281,7 +277,7 @@ def record_heartbeat(req: HeartbeatRequest, request: Request):
     return {"status": "ok", "command": cmd, "server_time": datetime.now().strftime("%H:%M:%S")}
 
 # -----------------------------------------------------------------------------
-# ADMIN API & WEB DASHBOARD
+# ADMIN API
 # -----------------------------------------------------------------------------
 def check_admin_token(token: Optional[str] = None):
     init_db()
@@ -317,7 +313,7 @@ def admin_overview(token: str):
     cursor = conn.cursor()
     
     now_ts = time.time()
-    online_threshold = now_ts - 25  # ขาดการส่งสัญญาณเกิน 25 วินาที -> OFFLINE ทันที
+    online_threshold = now_ts - 25  # ขาดสัญญาณเกิน 25s = OFFLINE
     
     cursor.execute("UPDATE bot_telemetry SET status = 'OFFLINE' WHERE last_seen < ?", (online_threshold,))
     conn.commit()
@@ -334,12 +330,18 @@ def admin_overview(token: str):
     cursor.execute("SELECT COUNT(*) as offline FROM bot_telemetry WHERE status = 'OFFLINE'")
     offline_bots = cursor.fetchone()["offline"]
     
-    cursor.execute("SELECT * FROM bot_telemetry ORDER BY last_seen DESC LIMIT 50")
+    # Devices list with bound key info
+    cursor.execute("""
+        SELECT b.*, k.customer_name, k.expires_at, k.status as key_status
+        FROM bot_telemetry b
+        LEFT JOIN license_keys k ON b.key_code = k.key_code
+        ORDER BY b.status ASC, b.last_seen DESC LIMIT 50
+    """)
     bots = [dict(r) for r in cursor.fetchall()]
     for b in bots:
         is_on = (now_ts - b["last_seen"]) <= 25 and b["status"] == "ONLINE"
         b["is_online"] = is_on
-        b["last_seen_sec"] = int(now_ts - b["last_seen"])
+        b["last_seen_sec"] = max(0, int(now_ts - b["last_seen"]))
     
     cursor.execute("SELECT * FROM license_keys ORDER BY created_at DESC")
     keys = [dict(r) for r in cursor.fetchall()]
@@ -399,6 +401,7 @@ def admin_key_action(key_code: str = Form(...), action: str = Form(...), token: 
         cursor.execute("UPDATE license_keys SET status = 'ACTIVE' WHERE key_code = ?", (key_code,))
     elif action == "DELETE":
         cursor.execute("DELETE FROM license_keys WHERE key_code = ?", (key_code,))
+        cursor.execute("DELETE FROM bot_telemetry WHERE key_code = ?", (key_code,))
     elif action == "EXTEND_30D":
         cursor.execute("SELECT expires_at FROM license_keys WHERE key_code = ?", (key_code,))
         r = cursor.fetchone()
@@ -412,7 +415,7 @@ def admin_key_action(key_code: str = Form(...), action: str = Form(...), token: 
     return {"success": True}
 
 # -----------------------------------------------------------------------------
-# ULTRA-LUXURY OBSIDIAN GOLD COMMAND CENTER DASHBOARD (MODULAR ZONES)
+# 4K/12K INSTITUTIONAL OBSIDIAN & CHAMPAGNE GOLD ADMIN DASHBOARD
 # -----------------------------------------------------------------------------
 ADMIN_HTML = """<!DOCTYPE html>
 <html lang="th">
@@ -422,7 +425,7 @@ ADMIN_HTML = """<!DOCTYPE html>
     <title>👑 MR.KRIT AI ULTRA • ศูนย์บัญชาการคลาวด์สูงสุด</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Prompt:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --gold-primary: #FFD700;
@@ -430,13 +433,13 @@ ADMIN_HTML = """<!DOCTYPE html>
             --gold-dark: #C59B27;
             --gold-gradient: linear-gradient(135deg, #FFF099 0%, #FFD700 45%, #C59B27 100%);
             --gold-glow: rgba(255, 215, 0, 0.4);
-            --gold-border: rgba(255, 215, 0, 0.22);
+            --gold-border: rgba(255, 215, 0, 0.24);
             --gold-subtle: rgba(255, 215, 0, 0.08);
             
-            --bg-deep: #040406;
-            --bg-card: rgba(11, 11, 16, 0.90);
-            --bg-card-hover: rgba(18, 18, 26, 0.95);
-            --bg-input: #08080C;
+            --bg-deep: #030305;
+            --bg-card: rgba(10, 10, 15, 0.94);
+            --bg-card-hover: rgba(16, 16, 24, 0.98);
+            --bg-input: #07070B;
             
             --text-main: #FFFFFF;
             --text-muted: #8E8E9F;
@@ -455,7 +458,8 @@ ADMIN_HTML = """<!DOCTYPE html>
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Outfit', 'Prompt', sans-serif;
+            font-family: 'Prompt', 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
@@ -464,8 +468,8 @@ ADMIN_HTML = """<!DOCTYPE html>
             min-height: 100vh;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 215, 0, 0.08) 0%, transparent 70%),
-                radial-gradient(ellipse 50% 30% at 90% 100%, rgba(197, 155, 39, 0.05) 0%, transparent 60%);
+                radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.07) 0%, transparent 60%),
+                radial-gradient(circle at 90% 100%, rgba(197, 155, 39, 0.05) 0%, transparent 50%);
             background-attachment: fixed;
         }
 
@@ -477,32 +481,32 @@ ADMIN_HTML = """<!DOCTYPE html>
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 36px;
-            background: rgba(4, 4, 6, 0.92);
-            backdrop-filter: blur(20px);
+            padding: 16px 40px;
+            background: rgba(3, 3, 5, 0.94);
+            backdrop-filter: blur(24px);
             border-bottom: 1px solid var(--gold-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.85);
         }
         .nav-brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
         }
         .crown-badge {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             background: var(--gold-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            box-shadow: 0 0 24px var(--gold-glow);
+            font-size: 24px;
+            box-shadow: 0 0 26px var(--gold-glow);
         }
         .brand-title {
-            font-size: 18px;
-            font-weight: 900;
-            letter-spacing: 1px;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
             background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -510,13 +514,13 @@ ADMIN_HTML = """<!DOCTYPE html>
         .brand-sub {
             font-size: 11px;
             color: var(--text-muted);
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
         }
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
         .live-status {
             display: flex;
@@ -526,8 +530,8 @@ ADMIN_HTML = """<!DOCTYPE html>
             font-weight: 700;
             color: var(--neon-green);
             background: rgba(0, 230, 118, 0.1);
-            border: 1px solid rgba(0, 230, 118, 0.3);
-            padding: 6px 14px;
+            border: 1px solid rgba(0, 230, 118, 0.35);
+            padding: 6px 16px;
             border-radius: 30px;
         }
         .pulse-dot {
@@ -543,34 +547,35 @@ ADMIN_HTML = """<!DOCTYPE html>
             50% { transform: scale(1.3); opacity: 0.6; }
         }
 
-        /* ─── MAIN CONTAINER ─────────────────────────────────── */
+        /* ─── CONTAINER ──────────────────────────────────────── */
         .container {
             max-width: 1440px;
             margin: 0 auto;
-            padding: 32px 28px;
+            padding: 36px 32px;
         }
 
-        /* ─── STATS GRID ─────────────────────────────────────── */
+        /* ─── STATS CARDS (CLEAN & ACCURATE) ─────────────────── */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
             margin-bottom: 36px;
         }
         .stat-card {
             background: var(--bg-card);
             border: 1px solid var(--gold-border);
             border-radius: var(--radius-lg);
-            padding: 24px 26px;
+            padding: 26px 28px;
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(18px);
             transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
         .stat-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(255, 215, 0, 0.55);
-            box-shadow: 0 12px 36px rgba(255, 215, 0, 0.12);
+            border-color: rgba(255, 215, 0, 0.6);
+            box-shadow: 0 16px 40px rgba(255, 215, 0, 0.15);
         }
         .stat-card::before {
             content: '';
@@ -582,51 +587,52 @@ ADMIN_HTML = """<!DOCTYPE html>
             background: var(--gold-gradient);
         }
         .stat-icon {
-            font-size: 28px;
-            margin-bottom: 10px;
+            font-size: 30px;
+            margin-bottom: 12px;
             display: inline-block;
         }
         .stat-label {
-            font-size: 11.5px;
-            font-weight: 800;
+            font-size: 12px;
+            font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
         }
         .stat-value {
-            font-size: 38px;
-            font-weight: 900;
+            font-size: 42px;
+            font-weight: 800;
             color: #FFFFFF;
-            margin: 6px 0 2px;
+            margin: 6px 0 4px;
+            font-family: 'Outfit', sans-serif;
             letter-spacing: -0.5px;
         }
         .stat-value.green {
             color: var(--neon-green);
-            text-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+            text-shadow: 0 0 24px rgba(0, 230, 118, 0.45);
         }
         .stat-value.gold {
             background: var(--gold-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 24px rgba(255, 215, 0, 0.3);
+            text-shadow: 0 0 26px rgba(255, 215, 0, 0.35);
         }
         .stat-value.red {
             color: var(--neon-red);
-            text-shadow: 0 0 20px rgba(255, 59, 92, 0.3);
+            text-shadow: 0 0 24px rgba(255, 59, 92, 0.35);
         }
         .stat-desc {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-muted);
         }
 
-        /* ─── MODULAR ZONE PANELS ────────────────────────────── */
+        /* ─── MODULAR ZONES ──────────────────────────────────── */
         .zone-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             background: rgba(255, 215, 0, 0.12);
             color: var(--gold-primary);
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.35);
             border-radius: 6px;
             padding: 3px 10px;
             font-size: 11px;
@@ -639,16 +645,16 @@ ADMIN_HTML = """<!DOCTYPE html>
             background: var(--bg-card);
             border: 1px solid var(--gold-border);
             border-radius: var(--radius-lg);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(18px);
             margin-bottom: 36px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 12px 45px rgba(0, 0, 0, 0.6);
         }
         .panel-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 24px 30px;
+            padding: 24px 32px;
             border-bottom: 1px solid var(--gold-border);
             background: rgba(255, 215, 0, 0.025);
         }
@@ -658,24 +664,24 @@ ADMIN_HTML = """<!DOCTYPE html>
             gap: 16px;
         }
         .panel-icon-box {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
             background: rgba(255, 215, 0, 0.12);
-            border: 1px solid rgba(255, 215, 0, 0.28);
+            border: 1px solid rgba(255, 215, 0, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 24px;
         }
         .panel-title {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 800;
             color: #FFFFFF;
             letter-spacing: 0.5px;
         }
         .panel-subtitle {
-            font-size: 12px;
+            font-size: 12.5px;
             color: var(--text-muted);
             margin-top: 3px;
         }
@@ -697,7 +703,7 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
         .btn-gold {
             background: var(--gold-gradient);
-            color: #040406;
+            color: #030305;
             box-shadow: 0 4px 18px rgba(255, 215, 0, 0.35);
         }
         .btn-gold:hover {
@@ -751,18 +757,18 @@ ADMIN_HTML = """<!DOCTYPE html>
             text-align: left;
         }
         thead th {
-            padding: 16px 22px;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
+            padding: 16px 24px;
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
             text-transform: uppercase;
             color: var(--text-muted);
             border-bottom: 1px solid var(--gold-border);
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.35);
             white-space: nowrap;
         }
         tbody td {
-            padding: 18px 22px;
+            padding: 18px 24px;
             font-size: 14px;
             border-bottom: 1px solid rgba(255, 215, 0, 0.06);
             color: #E2E2E8;
@@ -785,13 +791,13 @@ ADMIN_HTML = """<!DOCTYPE html>
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 800;
+            font-weight: 700;
         }
         .badge-online {
             background: rgba(0, 230, 118, 0.15);
             color: var(--neon-green);
-            border: 1px solid rgba(0, 230, 118, 0.4);
-            box-shadow: 0 0 12px rgba(0, 230, 118, 0.15);
+            border: 1px solid rgba(0, 230, 118, 0.45);
+            box-shadow: 0 0 14px rgba(0, 230, 118, 0.2);
         }
         .badge-offline {
             background: rgba(255, 59, 92, 0.12);
@@ -815,6 +821,17 @@ ADMIN_HTML = """<!DOCTYPE html>
             background: currentColor;
         }
 
+        code.hwid-code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.22);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
         /* ─── LOGIN SCREEN ───────────────────────────────────── */
         #login-view {
             min-height: 85vh;
@@ -829,9 +846,9 @@ ADMIN_HTML = """<!DOCTYPE html>
             border-radius: 26px;
             padding: 46px 40px;
             width: 100%;
-            max-width: 440px;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(20px);
+            max-width: 450px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(24px);
             position: relative;
         }
         .login-card::before {
@@ -867,7 +884,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             display: block;
             font-size: 12px;
             font-weight: 700;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             color: var(--text-muted);
             text-transform: uppercase;
             margin-bottom: 8px;
@@ -876,7 +893,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             width: 100%;
             padding: 14px 18px;
             background: var(--bg-input);
-            border: 1px solid rgba(255, 215, 0, 0.18);
+            border: 1px solid rgba(255, 215, 0, 0.2);
             border-radius: var(--radius-md);
             color: #FFFFFF;
             font-size: 14px;
@@ -885,23 +902,23 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
         .form-control:focus {
             border-color: var(--gold-primary);
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.18);
         }
 
-        /* ─── MODAL ──────────────────────────────────────────── */
+        /* ─── MODALS ─────────────────────────────────────────── */
         .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(14px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(16px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
         .modal-box {
-            background: #09090E;
+            background: #08080D;
             border: 1px solid var(--gold-border);
             border-radius: 24px;
             padding: 36px;
@@ -934,14 +951,10 @@ ADMIN_HTML = """<!DOCTYPE html>
             color: var(--neon-red);
         }
 
-        /* Responsive */
         @media (max-width: 1024px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 640px) {
             .stats-grid { grid-template-columns: 1fr; }
-            .navbar { padding: 14px 18px; }
-            .container { padding: 20px 14px; }
+            .navbar { padding: 14px 20px; }
+            .container { padding: 20px 16px; }
         }
     </style>
 </head>
@@ -953,7 +966,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             <div class="crown-badge">👑</div>
             <div>
                 <div class="brand-title">MR.KRIT AI ULTRA • MASTER CLOUD HUB</div>
-                <div class="brand-sub">ศูนย์ควบคุมลิขสิทธิ์และตรวจจับบอทสด</div>
+                <div class="brand-sub">ศูนย์กลางจัดการคีย์และตรวจจับอุปกรณ์สด 4K/12K</div>
             </div>
         </div>
         <div class="nav-actions">
@@ -962,7 +975,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                 <span>EDGE GATEWAY: ONLINE</span>
             </div>
             <div id="nav-user-actions" style="display: none;">
-                <button class="btn btn-outline btn-sm" onclick="fetchDashboard()">🔄 รีเฟรชข้อมูล</button>
+                <button class="btn btn-outline btn-sm" onclick="fetchDashboard()">🔄 รีเฟรชข้อมูลสด</button>
                 <button class="btn btn-danger btn-sm" onclick="logout()" style="margin-left: 8px;">🚪 ออกจากระบบ</button>
             </div>
         </div>
@@ -973,15 +986,15 @@ ADMIN_HTML = """<!DOCTYPE html>
         <div class="login-card">
             <div class="login-header">
                 <div class="login-crown">👑</div>
-                <h2 style="font-size: 22px; font-weight: 900; color: #FFF; margin-bottom: 6px;">Master Command Access</h2>
-                <p style="color: var(--text-muted); font-size: 13px;">เข้าสู่ระบบศูนย์กลางบัญชาการระดับสูงสุด</p>
+                <h2 style="font-size: 22px; font-weight: 800; color: #FFF; margin-bottom: 6px;">Master Command Access</h2>
+                <p style="color: var(--text-muted); font-size: 13px;">เข้าสู่ระบบศูนย์บัญชาการคลาวด์สูงสุด</p>
             </div>
             <div class="form-group">
-                <label class="form-label">ชื่อผู้ใช้ (Username)</label>
+                <label class="form-label">ชื่อผู้ใช้ (Admin Username)</label>
                 <input type="text" id="login-user" class="form-control" placeholder="admin" value="admin">
             </div>
             <div class="form-group">
-                <label class="form-label">รหัสผ่าน (Password)</label>
+                <label class="form-label">รหัสผ่าน (Master Password)</label>
                 <input type="password" id="login-pass" class="form-control" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleLogin()">
             </div>
             <button class="btn btn-gold" style="width: 100%; justify-content: center; padding: 14px; font-size: 15px; margin-top: 8px;" onclick="handleLogin()" id="btn-login-submit">
@@ -994,31 +1007,25 @@ ADMIN_HTML = """<!DOCTYPE html>
     <!-- ═══════════════════════════════════════════ DASHBOARD VIEW ═══ -->
     <div id="dash-view" class="container" style="display: none;">
         
-        <!-- Stats Grid (Online / Active Keys / Offline / Cloud Security) -->
+        <!-- 3 Essential Summary Cards -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon">🟢</div>
-                <div class="stat-label">บอทออนไลน์สด (Live Online)</div>
+                <div class="stat-label">บอทที่ออนไลน์สด (Live Online Bots)</div>
                 <div class="stat-value green" id="stat-online">0</div>
-                <div class="stat-desc">เครื่องที่กำลังเปิดโปรแกรมและส่งสัญญาณอยู่</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🔑</div>
-                <div class="stat-label">คีย์เปิดใช้งาน (Active Keys)</div>
-                <div class="stat-value gold" id="stat-keys">0 / 0</div>
-                <div class="stat-desc">จำนวนคีย์ที่ได้รับอนุญาตในระบบ</div>
+                <div class="stat-desc">เครื่องคอมพิวเตอร์ที่กำลังเปิดโปรแกรมและเทรดอยู่ขณะนี้</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🔴</div>
-                <div class="stat-label">เครื่องออฟไลน์ (Offline Devices)</div>
+                <div class="stat-label">เครื่องที่ออฟไลน์ (Offline Devices)</div>
                 <div class="stat-value red" id="stat-offline">0</div>
-                <div class="stat-desc">เครื่องที่ปิดโปรแกรมหรือขาดการเชื่อมต่อ</div>
+                <div class="stat-desc">เครื่องที่ปิดโปรแกรม หรือขาดการเชื่อมต่ออินเทอร์เน็ต</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">🛡️</div>
-                <div class="stat-label">ระบบคลาวด์เกตเวย์ (Security Shield)</div>
-                <div class="stat-value gold" style="font-size: 26px; padding-top: 6px;">ENCRYPTED</div>
-                <div class="stat-desc">Vercel Global Edge · Active 24/7</div>
+                <div class="stat-icon">🔑</div>
+                <div class="stat-label">คีย์ผลิตภัณฑ์ที่เปิดใช้งาน (Active Keys)</div>
+                <div class="stat-value gold" id="stat-keys">0 / 0</div>
+                <div class="stat-desc">จำนวนคีย์ที่ได้รับอนุญาต และผูกกับเครื่องลูกค้าแล้ว</div>
             </div>
         </div>
 
@@ -1028,12 +1035,12 @@ ADMIN_HTML = """<!DOCTYPE html>
                 <div class="panel-title-wrap">
                     <div class="panel-icon-box">🛰️</div>
                     <div>
-                        <div class="zone-badge">ZONE 1 • LIVE TELEMETRY</div>
-                        <div class="panel-title">เรดาร์ตรวจจับอุปกรณ์สดและสถานะการเชื่อมต่อ (Live Devices Radar)</div>
-                        <div class="panel-subtitle">แสดงเครื่องที่เปิด-ปิดโปรแกรมหน้าบ้านแบบ Real-Time ทันที</div>
+                        <div class="zone-badge">ZONE 1 • LIVE RADAR</div>
+                        <div class="panel-title">เรดาร์ตรวจจับอุปกรณ์และสถานะการเชื่อมต่อ (Live Devices Radar)</div>
+                        <div class="panel-subtitle">ตรวจสอบเครื่องคอมพิวเตอร์ที่รันบอทเทรดแบบ Real-Time ทันที</div>
                     </div>
                 </div>
-                <button class="btn btn-outline btn-sm" onclick="fetchDashboard()">🔄 รีเฟรชสด</button>
+                <button class="btn btn-outline btn-sm" onclick="fetchDashboard()">🔄 รีเฟรชข้อมูล</button>
             </div>
             <div class="table-responsive">
                 <table>
@@ -1042,73 +1049,47 @@ ADMIN_HTML = """<!DOCTYPE html>
                             <th>สถานะการเชื่อมต่อ</th>
                             <th>รหัสเครื่อง (HWID)</th>
                             <th>บัญชี MT5 / โหมด</th>
-                            <th>โหนดเซิร์ฟเวอร์</th>
-                            <th>ออเดอร์ค้าง</th>
+                            <th>คีย์ผลิตภัณฑ์ (Password Key)</th>
+                            <th>ผู้ถือสิทธิ์ / วันหมดอายุ</th>
                             <th>สัญญาณล่าสุด (Last Seen)</th>
-                            <th>จัดการการเชื่อมต่อ</th>
+                            <th>คำสั่งควบคุม</th>
                         </tr>
                     </thead>
                     <tbody id="bot-table-body">
-                        <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">🛰️ ยังไม่มีอุปกรณ์ส่งสัญญาณเข้ามาในขณะนี้</td></tr>
+                        <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 36px;">🛰️ ยังไม่มีอุปกรณ์ส่งสัญญาณเข้ามาในขณะนี้</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════ ZONE 2: KEY GENERATOR & LICENSE SUITE ═══ -->
+        <!-- ═══════════════════════════════════════════ ZONE 2: LICENSE KEY GENERATOR ═══ -->
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title-wrap">
                     <div class="panel-icon-box">🔑</div>
                     <div>
-                        <div class="zone-badge">ZONE 2 • LICENSE GENERATOR</div>
-                        <div class="panel-title">ระบบสร้างและจัดการคีย์ผลิตภัณฑ์ (License Keys Master Suite)</div>
-                        <div class="panel-subtitle">ออกคีย์สิทธิ์การใช้งานใหม่ และควบคุมวันหมดอายุของลูกค้า</div>
+                        <div class="zone-badge">ZONE 2 • LICENSE MASTER</div>
+                        <div class="panel-title">ระบบสร้างและจัดการคีย์ผลิตภัณฑ์ (License Key Generator)</div>
+                        <div class="panel-subtitle">ออกรหัสผ่านคีย์ผลิตภัณฑ์ให้ลูกค้า เพื่อใช้ปลดล็อกเข้าสู่หน้าบ้าน</div>
                     </div>
                 </div>
-                <button class="btn btn-gold" onclick="openKeyModal()">➕ สร้างคีย์ใหม่ (Generate Key)</button>
+                <button class="btn btn-gold" onclick="openKeyModal()">➕ สร้างคีย์ผลิตภัณฑ์ใหม่ (Generate Key)</button>
             </div>
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
-                            <th>รหัสคีย์ผลิตภัณฑ์ (Product License Key)</th>
+                            <th>รหัสคีย์ผลิตภัณฑ์ (License Password Key)</th>
                             <th>ชื่อลูกค้า / ผู้ใช้งาน</th>
                             <th>สถานะสิทธิ์</th>
                             <th>เครื่องที่ผูก (Bound HWID)</th>
-                            <th>วันหมดอายุ</th>
-                            <th>คำสั่งควบคุมสิทธิ์</th>
+                            <th>วันหมดอายุ (Expiry Date)</th>
+                            <th>คำสั่งจัดการสิทธิ์</th>
                         </tr>
                     </thead>
                     <tbody id="key-table-body">
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════════ ZONE 3: REMOTE CONTROL & SECURITY SUITE ═══ -->
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title-wrap">
-                    <div class="panel-icon-box">🛑</div>
-                    <div>
-                        <div class="zone-badge">ZONE 3 • REMOTE DEVICE CONTROL</div>
-                        <div class="panel-title">ศูนย์ควบคุมและระงับเครื่องระยะไกล (Remote Security & Ban Suite)</div>
-                        <div class="panel-subtitle">ปลดล็อคเครื่องเพื่อให้ลูกค้าย้ายเครื่องใหม่ หรือสั่งระงับสิทธิ์ทันที</div>
-                    </div>
-                </div>
-            </div>
-            <div style="padding: 24px 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <div style="background: var(--bg-input); border: 1px solid var(--gold-border); border-radius: var(--radius-md); padding: 20px;">
-                    <div style="font-size: 16px; font-weight: 800; color: var(--gold-primary); margin-bottom: 6px;">🔄 ปลดล็อค HWID (Reset Device Binding)</div>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">ใช้เมื่อลูกค้าเปลี่ยนคอมพิวเตอร์หรือลง Windows ใหม่ เพื่อให้ลูกค้านำคีย์เดิมไปเปิดใช้งานบนเครื่องใหม่ได้</p>
-                    <span style="font-size: 12px; color: var(--neon-green);">✓ สามารถกดปุ่ม [🔄 ปลดล็อค HWID] ในตาราง Zone 2 ได้ทันที</span>
-                </div>
-                <div style="background: var(--bg-input); border: 1px solid rgba(255, 59, 92, 0.35); border-radius: var(--radius-md); padding: 20px;">
-                    <div style="font-size: 16px; font-weight: 800; color: var(--neon-red); margin-bottom: 6px;">🚫 สั่งระงับสิทธิ์ทันที (Instant Ban / Kill Switch)</div>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">เมื่อสั่งระงับสิทธิ์ โปรแกรมหน้าบ้านและบอทของเครื่องเป้าหมายจะถูกสั่งหยุดการทำงานและตัดสิทธิ์การเทรดทันที</p>
-                    <span style="font-size: 12px; color: var(--neon-red);">✓ สามารถกดปุ่ม [🚫 ระงับคีย์] ในตาราง Zone 2 ได้ทันที</span>
-                </div>
             </div>
         </div>
 
@@ -1118,13 +1099,13 @@ ADMIN_HTML = """<!DOCTYPE html>
     <div id="key-modal" class="modal-overlay">
         <div class="modal-box">
             <button class="modal-close" onclick="closeKeyModal()">✕</button>
-            <div class="modal-title">✨ สร้างรหัสสิทธิ์การใช้งานใหม่ (New License)</div>
+            <div class="modal-title">✨ สร้างคีย์ผลิตภัณฑ์ใหม่ (Generate Key)</div>
             <div class="form-group">
-                <label class="form-label">ชื่อลูกค้า (Customer Name)</label>
-                <input type="text" id="new-cust-name" class="form-control" placeholder="เช่น คุณสมชาย (VIP Client)">
+                <label class="form-label">ชื่อลูกค้า / ผู้ถือสิทธิ์</label>
+                <input type="text" id="new-cust-name" class="form-control" placeholder="เช่น คุณสมชาย (VIP Trader)">
             </div>
             <div class="form-group">
-                <label class="form-label">ระยะเวลาสิทธิ์ (Duration)</label>
+                <label class="form-label">ระยะเวลาสิทธิ์การใช้งาน (Duration)</label>
                 <select id="new-duration" class="form-control">
                     <option value="7">7 วัน (ทดลองใช้งาน Trial)</option>
                     <option value="30" selected>30 วัน (1 เดือน)</option>
@@ -1136,7 +1117,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             </div>
             <div class="form-group">
                 <label class="form-label">บันทึกช่วยจำ (Notes)</label>
-                <input type="text" id="new-notes" class="form-control" placeholder="เช่น ชำระแล้วทางไลน์, แพ็กเกจ Gold">
+                <input type="text" id="new-notes" class="form-control" placeholder="เช่น แพ็กเกจ Gold, ชำระแล้ว">
             </div>
             <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px;">
                 <button class="btn btn-outline" onclick="closeKeyModal()">ยกเลิก</button>
@@ -1151,9 +1132,9 @@ ADMIN_HTML = """<!DOCTYPE html>
             <button class="modal-close" onclick="closeResultModal()">✕</button>
             <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
             <h3 style="font-size: 20px; font-weight: 800; color: var(--gold-primary); margin-bottom: 8px;">สร้างคีย์สำเร็จเรียบร้อย!</h3>
-            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">คัดลอกรหัสคีย์นี้ส่งให้ลูกค้าได้ทันที</p>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">คัดลอกรหัสคีย์นี้ส่งให้ลูกค้าใช้เป็นรหัสผ่านเข้าเว็บหน้าบ้าน</p>
             <div style="background: var(--bg-input); border: 1px solid rgba(255, 215, 0, 0.35); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 22px;">
-                <div id="result-key-code" style="font-size: 16px; font-weight: 900; color: var(--gold-primary); letter-spacing: 1px; word-break: break-all;"></div>
+                <div id="result-key-code" style="font-size: 16px; font-weight: 800; color: var(--gold-primary); font-family: 'JetBrains Mono', monospace; word-break: break-all;"></div>
                 <div id="result-key-exp" style="font-size: 12px; color: var(--text-muted); margin-top: 8px;"></div>
             </div>
             <button class="btn btn-gold" style="width: 100%; justify-content: center;" onclick="copyResultKey()" id="btn-copy-key">
@@ -1174,7 +1155,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                 document.getElementById('nav-user-actions').style.display = 'flex';
                 fetchDashboard();
                 if (!window.refreshInterval) {
-                    window.refreshInterval = setInterval(fetchDashboard, 6000); // รีเฟรชสดทุก 6 วินาที
+                    window.refreshInterval = setInterval(fetchDashboard, 5000);
                 }
             } else {
                 document.getElementById('login-view').style.display = 'flex';
@@ -1231,15 +1212,15 @@ ADMIN_HTML = """<!DOCTYPE html>
                 if (res.status === 401) { logout(); return; }
                 const data = await res.json();
 
-                // 1. Stats Counter (Online / Active Keys / Offline)
+                // 1. Stats Counter (Online / Offline / Active Keys)
                 document.getElementById('stat-online').innerText = data.stats.online_bots;
-                document.getElementById('stat-keys').innerText = `${data.stats.active_keys} / ${data.stats.total_keys}`;
                 document.getElementById('stat-offline').innerText = data.stats.offline_bots;
+                document.getElementById('stat-keys').innerText = `${data.stats.active_keys} / ${data.stats.total_keys}`;
 
                 // 2. Zone 1: Bots Radar Table
                 const botTbody = document.getElementById('bot-table-body');
                 if (data.bots.length === 0) {
-                    botTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">🛰️ ยังไม่มีอุปกรณ์ส่งสัญญาณเข้ามาในขณะนี้</td></tr>`;
+                    botTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 36px;">🛰️ ยังไม่มีอุปกรณ์ส่งสัญญาณเข้ามาในขณะนี้</td></tr>`;
                 } else {
                     botTbody.innerHTML = data.bots.map(b => `
                         <tr>
@@ -1248,15 +1229,21 @@ ADMIN_HTML = """<!DOCTYPE html>
                                     <span class="badge-dot"></span>${b.is_online ? '🟢 ออนไลน์ (ONLINE)' : '🔴 ออฟไลน์ (OFFLINE)'}
                                 </span>
                             </td>
-                            <td><code style="background: rgba(255, 215, 0, 0.08); border: 1px solid rgba(255, 215, 0, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: 800; color: var(--gold-primary);">${b.hwid}</code></td>
-                            <td><strong style="color: #FFF;">#${b.account_login || 'N/A'}</strong></td>
-                            <td style="color: var(--text-muted); font-size: 13px;">${b.broker_server || 'Web Cockpit Engine'}</td>
-                            <td><span class="badge badge-active">${b.open_orders} ไม้</span></td>
+                            <td><code class="hwid-code">${b.hwid}</code></td>
+                            <td><strong style="color: #FFF;">${b.account_login || 'N/A'}</strong></td>
+                            <td><span style="color: var(--gold-primary); font-family: 'JetBrains Mono', monospace; font-size: 13px;">${b.key_code || 'N/A'}</span></td>
+                            <td>
+                                <div style="font-weight: 700; color: #FFF;">${b.customer_name || 'VIP Client'}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">หมดอายุ: ${b.expires_at || 'N/A'}</div>
+                            </td>
                             <td style="color: ${b.is_online ? 'var(--neon-green)' : 'var(--text-muted)'}; font-size: 13px; font-weight: 600;">
-                                ${b.is_online ? `⚡ ติดต่ออยู่ (${b.last_seen_sec}s ที่แล้ว)` : `⏳ ขาดการติดต่อ (${b.last_seen_sec}s ที่แล้ว)`}
+                                ${b.is_online ? `⚡ เชื่อมต่ออยู่ (${b.last_seen_sec}s ที่แล้ว)` : `⏳ ขาดการติดต่อ (${b.last_seen_sec}s ที่แล้ว)`}
                             </td>
                             <td>
-                                <button class="btn btn-danger btn-sm" onclick="keyAction('${b.key_code}', 'BAN')">🛑 สั่งตัดการเชื่อมต่อ</button>
+                                <div style="display: flex; gap: 6px;">
+                                    <button class="btn btn-outline btn-sm" onclick="keyAction('${b.key_code}', 'RESET_HWID')">🔄 ปลดล็อคเครื่อง</button>
+                                    <button class="btn btn-danger btn-sm" onclick="keyAction('${b.key_code}', 'BAN')">🚫 ระงับ</button>
+                                </div>
                             </td>
                         </tr>
                     `).join('');
@@ -1266,7 +1253,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                 const keyTbody = document.getElementById('key-table-body');
                 keyTbody.innerHTML = data.keys.map(k => `
                     <tr>
-                        <td><strong style="color: var(--gold-primary); letter-spacing: 0.8px; font-size: 14px;">${k.key_code}</strong></td>
+                        <td><strong style="color: var(--gold-primary); font-family: 'JetBrains Mono', monospace; font-size: 14px;">${k.key_code}</strong></td>
                         <td>
                             <div style="font-weight: 700; color: #FFF;">${k.customer_name}</div>
                             ${k.notes ? `<div style="color: var(--text-muted); font-size: 12px;">${k.notes}</div>` : ''}
@@ -1277,14 +1264,14 @@ ADMIN_HTML = """<!DOCTYPE html>
                             </span>
                         </td>
                         <td style="font-size: 13px;">
-                            ${k.hwid_bound ? `<code style="color: var(--neon-green); background: rgba(0, 230, 118, 0.08); padding: 3px 8px; border-radius: 6px;">${k.hwid_bound}</code>` : '<span style="color: var(--text-muted);">(ยังไม่ผูกเครื่อง)</span>'}
+                            ${k.hwid_bound ? `<code class="hwid-code" style="color: var(--neon-green);">${k.hwid_bound}</code>` : '<span style="color: var(--text-muted);">(ยังไม่ผูกเครื่อง)</span>'}
                         </td>
                         <td style="font-size: 13px; color: var(--text-muted);">${k.expires_at}</td>
                         <td>
                             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                                 ${k.hwid_bound ? `<button class="btn btn-outline btn-sm" onclick="keyAction('${k.key_code}', 'RESET_HWID')">🔄 ปลดล็อค HWID</button>` : ''}
                                 <button class="btn btn-outline btn-sm" onclick="keyAction('${k.key_code}', 'EXTEND_30D')">+30 วัน</button>
-                                ${k.status === 'ACTIVE' ? `<button class="btn btn-danger btn-sm" onclick="keyAction('${k.key_code}', 'BAN')">🚫 ระงับคีย์</button>` : `<button class="btn btn-success btn-sm" onclick="keyAction('${k.key_code}', 'ACTIVATE')">✅ เปิดใช้งาน</button>`}
+                                ${k.status === 'ACTIVE' ? `<button class="btn btn-danger btn-sm" onclick="keyAction('${k.key_code}', 'BAN')">🚫 ระงับคีย์</button>` : `<button class="btn btn-success btn-sm" onclick="keyAction('${k.key_code}', 'ACTIVATE')">✅ คืนสิทธิ์</button>`}
                                 <button class="btn btn-danger btn-sm" style="padding: 6px 8px;" onclick="keyAction('${k.key_code}', 'DELETE')" title="ลบคีย์นี้">🗑️</button>
                             </div>
                         </td>
@@ -1297,8 +1284,9 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
 
         async function keyAction(keyCode, action) {
-            if (action === 'BAN' && !confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการระงับสิทธิ์คีย์นี้? บอทจะหยุดทำงานทันที!')) return;
-            if (action === 'DELETE' && !confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบคีย์นี้ออกจากระบบ?')) return;
+            if (!keyCode) return;
+            if (action === 'BAN' && !confirm('⚠️ แน่ใจหรือไม่ว่าต้องการระงับสิทธิ์คีย์นี้? บอทของลูกค้ารายนี้จะหยุดทำงานทันที!')) return;
+            if (action === 'DELETE' && !confirm('⚠️ แน่ใจหรือไม่ว่าต้องการลบคีย์นี้ออกจากระบบ?')) return;
             const fd = new FormData();
             fd.append('key_code', keyCode);
             fd.append('action', action);
@@ -1341,7 +1329,6 @@ ADMIN_HTML = """<!DOCTYPE html>
             });
         }
 
-        // Initialize view
         checkAuth();
     </script>
 </body>
