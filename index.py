@@ -44,15 +44,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.middleware("http")
-async def vercel_path_normalizer(request: Request, call_next):
-    """Normalize /api/index prefix from Vercel rewrites so standard routes match cleanly"""
-    path = request.scope.get("path", "")
-    if path.startswith("/api/index"):
-        new_path = path[len("/api/index"):]
-        request.scope["path"] = new_path if new_path else "/"
-    response = await call_next(request)
-    return response
+
 
 def get_db():
     conn = sqlite3.connect(DB_FILE)
