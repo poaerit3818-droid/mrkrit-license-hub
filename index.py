@@ -44,6 +44,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def vercel_path_normalizer(request: Request, call_next):
+    """Normalize /api/index prefix from Vercel rewrites so standard routes match cleanly"""
+    path = request.scope.get("path", "")
+    if path.startswith("/api/index"):
+        new_path = path[len("/api/index"):]
+        request.scope["path"] = new_path if new_path else "/"
+    response = await call_next(request)
+    return response
+
 def get_db():
     conn = sqlite3.connect(DB_FILE)
     conn.row_factory = sqlite3.Row
@@ -154,6 +164,8 @@ class CreateKeyRequest(BaseModel):
 # CLIENT BOT API ENDPOINTS
 # -----------------------------------------------------------------------------
 @app.get("/")
+@app.get("/api/index")
+@app.get("/api/index/")
 def health_check():
     init_db()
     return {
@@ -162,6 +174,11 @@ def health_check():
         "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "admin_portal": "/admin"
     }
+
+@app.get("/admin", response_class=HTMLResponse)
+@app.get("/api/index/admin", response_class=HTMLResponse)
+def get_admin_portal():
+    return HTMLResponse(content=ADMIN_HTML)
 
 @app.post("/api/v1/license/verify")
 def verify_license(req: VerifyRequest, request: Request):
