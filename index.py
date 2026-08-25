@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-👑 MR.KRIT AI ULTRA • CENTRAL CLOUD COMMAND CENTER
+👑 MR.KRIT AI ULTRA • MASTER CLOUD COMMAND CENTER
 =============================================================================
-ระบบศูนย์กลางจัดการคีย์สิทธิ์การใช้งาน และเรดาร์ตรวจจับบอทออนไลน์สด (Vercel Native)
+ระบบศูนย์กลางจัดการคีย์ผลิตภัณฑ์ และศูนย์บัญชาการตรวจจับอุปกรณ์สด (Vercel Native)
 """
 
 import os
@@ -31,8 +31,8 @@ DB_FILE = "/tmp/central_hub.db" if os.environ.get("VERCEL") else os.path.join(os
 
 app = FastAPI(
     title="Mr.krit AI Central Cloud Gateway",
-    version="2.5.0",
-    description="Central License Authentication & Telemetry Hub"
+    version="3.0.0",
+    description="Central License & Live Telemetry Hub"
 )
 
 app.add_middleware(
@@ -142,6 +142,7 @@ class HeartbeatRequest(BaseModel):
     profit_today: Optional[float] = 0.0
     open_orders: Optional[int] = 0
     bot_version: Optional[str] = "v20.5"
+    status: Optional[str] = "ONLINE"
 
 class CreateKeyRequest(BaseModel):
     customer_name: str
@@ -246,11 +247,13 @@ def record_heartbeat(req: HeartbeatRequest, request: Request):
         conn.close()
         return {"status": "error", "command": "STOP", "message": "License invalid or revoked"}
     
+    status_to_set = req.status.upper() if req.status else "ONLINE"
+    
     cursor.execute("""
         INSERT INTO bot_telemetry (
             hwid, key_code, account_login, broker_server, balance, equity, 
             profit_today, open_orders, bot_version, last_seen, ip_address, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ONLINE')
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(hwid) DO UPDATE SET
             key_code = excluded.key_code,
             account_login = excluded.account_login,
@@ -262,11 +265,11 @@ def record_heartbeat(req: HeartbeatRequest, request: Request):
             bot_version = excluded.bot_version,
             last_seen = excluded.last_seen,
             ip_address = excluded.ip_address,
-            status = 'ONLINE'
+            status = excluded.status
     """, (
         req.hwid.strip(), req.key.strip(), req.account_login, req.broker_server,
         req.balance, req.equity, req.profit_today, req.open_orders,
-        req.bot_version, now_ts, client_ip
+        req.bot_version, now_ts, client_ip, status_to_set
     ))
     
     cursor.execute("SELECT remote_command FROM bot_telemetry WHERE hwid = ?", (req.hwid.strip(),))
@@ -314,7 +317,7 @@ def admin_overview(token: str):
     cursor = conn.cursor()
     
     now_ts = time.time()
-    online_threshold = now_ts - 90
+    online_threshold = now_ts - 25  # ขาดการส่งสัญญาณเกิน 25 วินาที -> OFFLINE ทันที
     
     cursor.execute("UPDATE bot_telemetry SET status = 'OFFLINE' WHERE last_seen < ?", (online_threshold,))
     conn.commit()
@@ -328,15 +331,14 @@ def admin_overview(token: str):
     cursor.execute("SELECT COUNT(*) as online FROM bot_telemetry WHERE status = 'ONLINE'")
     online_bots = cursor.fetchone()["online"]
     
-    cursor.execute("SELECT SUM(balance) as total_bal, SUM(profit_today) as total_prof FROM bot_telemetry WHERE status = 'ONLINE'")
-    fin = cursor.fetchone()
-    total_balance = fin["total_bal"] or 0.0
-    total_profit = fin["total_prof"] or 0.0
+    cursor.execute("SELECT COUNT(*) as offline FROM bot_telemetry WHERE status = 'OFFLINE'")
+    offline_bots = cursor.fetchone()["offline"]
     
     cursor.execute("SELECT * FROM bot_telemetry ORDER BY last_seen DESC LIMIT 50")
     bots = [dict(r) for r in cursor.fetchall()]
     for b in bots:
-        b["is_online"] = (now_ts - b["last_seen"]) <= 90
+        is_on = (now_ts - b["last_seen"]) <= 25 and b["status"] == "ONLINE"
+        b["is_online"] = is_on
         b["last_seen_sec"] = int(now_ts - b["last_seen"])
     
     cursor.execute("SELECT * FROM license_keys ORDER BY created_at DESC")
@@ -348,8 +350,7 @@ def admin_overview(token: str):
             "total_keys": total_keys,
             "active_keys": active_keys,
             "online_bots": online_bots,
-            "total_balance": round(total_balance, 2),
-            "total_profit": round(total_profit, 2)
+            "offline_bots": offline_bots
         },
         "bots": bots,
         "keys": keys
@@ -411,7 +412,7 @@ def admin_key_action(key_code: str = Form(...), action: str = Form(...), token: 
     return {"success": True}
 
 # -----------------------------------------------------------------------------
-# ULTRA-LUXURY GOLD & OBSIDIAN BLACK DASHBOARD (THAI + EN)
+# ULTRA-LUXURY OBSIDIAN GOLD COMMAND CENTER DASHBOARD (MODULAR ZONES)
 # -----------------------------------------------------------------------------
 ADMIN_HTML = """<!DOCTYPE html>
 <html lang="th">
@@ -432,20 +433,20 @@ ADMIN_HTML = """<!DOCTYPE html>
             --gold-border: rgba(255, 215, 0, 0.22);
             --gold-subtle: rgba(255, 215, 0, 0.08);
             
-            --bg-deep: #050508;
-            --bg-card: rgba(13, 13, 18, 0.85);
-            --bg-card-hover: rgba(20, 20, 28, 0.95);
-            --bg-input: #09090D;
+            --bg-deep: #040406;
+            --bg-card: rgba(11, 11, 16, 0.90);
+            --bg-card-hover: rgba(18, 18, 26, 0.95);
+            --bg-input: #08080C;
             
             --text-main: #FFFFFF;
-            --text-muted: #9A9AA6;
+            --text-muted: #8E8E9F;
             --text-gold: #FFDF59;
             
             --neon-green: #00E676;
             --neon-red: #FF3B5C;
             --neon-cyan: #00F0FF;
             
-            --radius-lg: 18px;
+            --radius-lg: 20px;
             --radius-md: 12px;
             --radius-sm: 8px;
         }
@@ -463,7 +464,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             min-height: 100vh;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 215, 0, 0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 215, 0, 0.08) 0%, transparent 70%),
                 radial-gradient(ellipse 50% 30% at 90% 100%, rgba(197, 155, 39, 0.05) 0%, transparent 60%);
             background-attachment: fixed;
         }
@@ -477,10 +478,10 @@ ADMIN_HTML = """<!DOCTYPE html>
             align-items: center;
             justify-content: space-between;
             padding: 16px 36px;
-            background: rgba(5, 5, 8, 0.88);
+            background: rgba(4, 4, 6, 0.92);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--gold-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
         }
         .nav-brand {
             display: flex;
@@ -488,15 +489,15 @@ ADMIN_HTML = """<!DOCTYPE html>
             gap: 14px;
         }
         .crown-badge {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
             background: var(--gold-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
-            box-shadow: 0 0 20px var(--gold-glow);
+            box-shadow: 0 0 24px var(--gold-glow);
         }
         .brand-title {
             font-size: 18px;
@@ -554,7 +555,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
-            margin-bottom: 32px;
+            margin-bottom: 36px;
         }
         .stat-card {
             background: var(--bg-card);
@@ -577,28 +578,31 @@ ADMIN_HTML = """<!DOCTYPE html>
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
+            height: 3px;
             background: var(--gold-gradient);
-            opacity: 0.8;
         }
         .stat-icon {
             font-size: 28px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: inline-block;
         }
         .stat-label {
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11.5px;
+            font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1.5px;
         }
         .stat-value {
-            font-size: 36px;
+            font-size: 38px;
             font-weight: 900;
             color: #FFFFFF;
             margin: 6px 0 2px;
             letter-spacing: -0.5px;
+        }
+        .stat-value.green {
+            color: var(--neon-green);
+            text-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
         }
         .stat-value.gold {
             background: var(--gold-gradient);
@@ -606,51 +610,66 @@ ADMIN_HTML = """<!DOCTYPE html>
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 24px rgba(255, 215, 0, 0.3);
         }
-        .stat-value.green {
-            color: var(--neon-green);
-            text-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
+        .stat-value.red {
+            color: var(--neon-red);
+            text-shadow: 0 0 20px rgba(255, 59, 92, 0.3);
         }
         .stat-desc {
             font-size: 12px;
             color: var(--text-muted);
         }
 
-        /* ─── SECTION PANELS ─────────────────────────────────── */
+        /* ─── MODULAR ZONE PANELS ────────────────────────────── */
+        .zone-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 215, 0, 0.12);
+            color: var(--gold-primary);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
         .panel {
             background: var(--bg-card);
             border: 1px solid var(--gold-border);
             border-radius: var(--radius-lg);
             backdrop-filter: blur(16px);
-            margin-bottom: 30px;
+            margin-bottom: 36px;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
         .panel-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 22px 28px;
+            padding: 24px 30px;
             border-bottom: 1px solid var(--gold-border);
             background: rgba(255, 215, 0, 0.025);
         }
         .panel-title-wrap {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
         }
         .panel-icon-box {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             background: rgba(255, 215, 0, 0.12);
-            border: 1px solid rgba(255, 215, 0, 0.25);
+            border: 1px solid rgba(255, 215, 0, 0.28);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 22px;
         }
         .panel-title {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 800;
             color: #FFFFFF;
             letter-spacing: 0.5px;
@@ -658,7 +677,7 @@ ADMIN_HTML = """<!DOCTYPE html>
         .panel-subtitle {
             font-size: 12px;
             color: var(--text-muted);
-            margin-top: 2px;
+            margin-top: 3px;
         }
 
         /* ─── BUTTONS ────────────────────────────────────────── */
@@ -678,7 +697,7 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
         .btn-gold {
             background: var(--gold-gradient);
-            color: #050508;
+            color: #040406;
             box-shadow: 0 4px 18px rgba(255, 215, 0, 0.35);
         }
         .btn-gold:hover {
@@ -732,18 +751,18 @@ ADMIN_HTML = """<!DOCTYPE html>
             text-align: left;
         }
         thead th {
-            padding: 16px 20px;
+            padding: 16px 22px;
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             color: var(--text-muted);
             border-bottom: 1px solid var(--gold-border);
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.3);
             white-space: nowrap;
         }
         tbody td {
-            padding: 18px 20px;
+            padding: 18px 22px;
             font-size: 14px;
             border-bottom: 1px solid rgba(255, 215, 0, 0.06);
             color: #E2E2E8;
@@ -763,20 +782,21 @@ ADMIN_HTML = """<!DOCTYPE html>
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
         }
         .badge-online {
             background: rgba(0, 230, 118, 0.15);
             color: var(--neon-green);
-            border: 1px solid rgba(0, 230, 118, 0.35);
+            border: 1px solid rgba(0, 230, 118, 0.4);
+            box-shadow: 0 0 12px rgba(0, 230, 118, 0.15);
         }
         .badge-offline {
-            background: rgba(154, 154, 166, 0.15);
-            color: var(--text-muted);
-            border: 1px solid rgba(154, 154, 166, 0.3);
+            background: rgba(255, 59, 92, 0.12);
+            color: var(--neon-red);
+            border: 1px solid rgba(255, 59, 92, 0.35);
         }
         .badge-active {
             background: rgba(255, 215, 0, 0.15);
@@ -784,13 +804,13 @@ ADMIN_HTML = """<!DOCTYPE html>
             border: 1px solid rgba(255, 215, 0, 0.35);
         }
         .badge-banned {
-            background: rgba(255, 59, 92, 0.15);
+            background: rgba(255, 59, 92, 0.2);
             color: var(--neon-red);
-            border: 1px solid rgba(255, 59, 92, 0.35);
+            border: 1px solid var(--neon-red);
         }
         .badge-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: currentColor;
         }
@@ -806,8 +826,8 @@ ADMIN_HTML = """<!DOCTYPE html>
         .login-card {
             background: var(--bg-card);
             border: 1px solid var(--gold-border);
-            border-radius: 24px;
-            padding: 44px 38px;
+            border-radius: 26px;
+            padding: 46px 40px;
             width: 100%;
             max-width: 440px;
             box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
@@ -820,25 +840,25 @@ ADMIN_HTML = """<!DOCTYPE html>
             top: 0;
             left: 20%;
             right: 20%;
-            height: 2px;
+            height: 3px;
             background: var(--gold-gradient);
-            box-shadow: 0 0 20px var(--gold-primary);
+            box-shadow: 0 0 24px var(--gold-primary);
         }
         .login-header {
             text-align: center;
             margin-bottom: 30px;
         }
         .login-crown {
-            width: 64px;
-            height: 64px;
-            border-radius: 18px;
+            width: 68px;
+            height: 68px;
+            border-radius: 20px;
             background: var(--gold-gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 34px;
             margin: 0 auto 16px;
-            box-shadow: 0 0 30px var(--gold-glow);
+            box-shadow: 0 0 35px var(--gold-glow);
         }
         .form-group {
             margin-bottom: 20px;
@@ -873,15 +893,15 @@ ADMIN_HTML = """<!DOCTYPE html>
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(14px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
         .modal-box {
-            background: #0C0C12;
+            background: #09090E;
             border: 1px solid var(--gold-border);
             border-radius: 24px;
             padding: 36px;
@@ -932,14 +952,14 @@ ADMIN_HTML = """<!DOCTYPE html>
         <div class="nav-brand">
             <div class="crown-badge">👑</div>
             <div>
-                <div class="brand-title">MR.KRIT AI ULTRA • CLOUD HUB</div>
+                <div class="brand-title">MR.KRIT AI ULTRA • MASTER CLOUD HUB</div>
                 <div class="brand-sub">ศูนย์ควบคุมลิขสิทธิ์และตรวจจับบอทสด</div>
             </div>
         </div>
         <div class="nav-actions">
             <div class="live-status" id="live-indicator" style="display: none;">
                 <div class="pulse-dot"></div>
-                <span>ระบบทำงานสด (LIVE 24/7)</span>
+                <span>EDGE GATEWAY: ONLINE</span>
             </div>
             <div id="nav-user-actions" style="display: none;">
                 <button class="btn btn-outline btn-sm" onclick="fetchDashboard()">🔄 รีเฟรชข้อมูล</button>
@@ -953,7 +973,7 @@ ADMIN_HTML = """<!DOCTYPE html>
         <div class="login-card">
             <div class="login-header">
                 <div class="login-crown">👑</div>
-                <h2 style="font-size: 22px; font-weight: 900; color: #FFF; margin-bottom: 6px;">Admin Master Login</h2>
+                <h2 style="font-size: 22px; font-weight: 900; color: #FFF; margin-bottom: 6px;">Master Command Access</h2>
                 <p style="color: var(--text-muted); font-size: 13px;">เข้าสู่ระบบศูนย์กลางบัญชาการระดับสูงสุด</p>
             </div>
             <div class="form-group">
@@ -965,7 +985,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                 <input type="password" id="login-pass" class="form-control" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleLogin()">
             </div>
             <button class="btn btn-gold" style="width: 100%; justify-content: center; padding: 14px; font-size: 15px; margin-top: 8px;" onclick="handleLogin()" id="btn-login-submit">
-                🚀 เข้าสู่ระบบเซิร์ฟเวอร์
+                🔐 เข้าสู่ศูนย์บัญชาการ (ACCESS SYSTEM)
             </button>
             <div id="login-error-msg" style="color: var(--neon-red); font-size: 13px; text-align: center; margin-top: 14px; display: none;"></div>
         </div>
@@ -974,75 +994,76 @@ ADMIN_HTML = """<!DOCTYPE html>
     <!-- ═══════════════════════════════════════════ DASHBOARD VIEW ═══ -->
     <div id="dash-view" class="container" style="display: none;">
         
-        <!-- Stats Grid -->
+        <!-- Stats Grid (Online / Active Keys / Offline / Cloud Security) -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon">🟢</div>
-                <div class="stat-label">บอทออนไลน์สด (Active Live Bots)</div>
+                <div class="stat-label">บอทออนไลน์สด (Live Online)</div>
                 <div class="stat-value green" id="stat-online">0</div>
-                <div class="stat-desc">บอทที่กำลังรันอยู่ในตลาดขณะนี้</div>
+                <div class="stat-desc">เครื่องที่กำลังเปิดโปรแกรมและส่งสัญญาณอยู่</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🔑</div>
-                <div class="stat-label">คีย์เปิดใช้งาน (Active License Keys)</div>
+                <div class="stat-label">คีย์เปิดใช้งาน (Active Keys)</div>
                 <div class="stat-value gold" id="stat-keys">0 / 0</div>
-                <div class="stat-desc">คีย์ที่อนุญาตให้รันได้ในระบบ</div>
+                <div class="stat-desc">จำนวนคีย์ที่ได้รับอนุญาตในระบบ</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">💰</div>
-                <div class="stat-label">พอร์ตรวมทั้งหมด (Total Live Balance)</div>
-                <div class="stat-value gold" id="stat-balance">$0.00</div>
-                <div class="stat-desc">ยอดเงินรวมทุกพอร์ตที่เชื่อมต่อ</div>
+                <div class="stat-icon">🔴</div>
+                <div class="stat-label">เครื่องออฟไลน์ (Offline Devices)</div>
+                <div class="stat-value red" id="stat-offline">0</div>
+                <div class="stat-desc">เครื่องที่ปิดโปรแกรมหรือขาดการเชื่อมต่อ</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">📈</div>
-                <div class="stat-label">กำไรรวมวันนี้ (Today's Profit)</div>
-                <div class="stat-value" id="stat-profit" style="color: var(--neon-green);">$0.00</div>
-                <div class="stat-desc">กำไรสะสมรวมทุกบัญชีวันนี้</div>
+                <div class="stat-icon">🛡️</div>
+                <div class="stat-label">ระบบคลาวด์เกตเวย์ (Security Shield)</div>
+                <div class="stat-value gold" style="font-size: 26px; padding-top: 6px;">ENCRYPTED</div>
+                <div class="stat-desc">Vercel Global Edge · Active 24/7</div>
             </div>
         </div>
 
-        <!-- Panel 1: Live Bot Telemetry Radar -->
+        <!-- ═══════════════════════════════════════════ ZONE 1: LIVE BOT TELEMETRY RADAR ═══ -->
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title-wrap">
                     <div class="panel-icon-box">🛰️</div>
                     <div>
-                        <div class="panel-title">เรดาร์ตรวจจับบอทสด (Real-Time Bot Telemetry Radar)</div>
-                        <div class="panel-subtitle">ติดตามพอร์ตและสถานะการเทรดของลูกค้าแบบเรียลไทม์</div>
+                        <div class="zone-badge">ZONE 1 • LIVE TELEMETRY</div>
+                        <div class="panel-title">เรดาร์ตรวจจับอุปกรณ์สดและสถานะการเชื่อมต่อ (Live Devices Radar)</div>
+                        <div class="panel-subtitle">แสดงเครื่องที่เปิด-ปิดโปรแกรมหน้าบ้านแบบ Real-Time ทันที</div>
                     </div>
                 </div>
-                <button class="btn btn-outline btn-sm" onclick="fetchDashboard()">🔄 รีเฟรช</button>
+                <button class="btn btn-outline btn-sm" onclick="fetchDashboard()">🔄 รีเฟรชสด</button>
             </div>
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
-                            <th>สถานะบอท</th>
-                            <th>บัญชี MT5</th>
-                            <th>โบรกเกอร์ / Server</th>
-                            <th>ยอด Balance / Equity</th>
-                            <th>กำไรวันนี้</th>
+                            <th>สถานะการเชื่อมต่อ</th>
+                            <th>รหัสเครื่อง (HWID)</th>
+                            <th>บัญชี MT5 / โหมด</th>
+                            <th>โหนดเซิร์ฟเวอร์</th>
                             <th>ออเดอร์ค้าง</th>
-                            <th>HWID เครื่อง</th>
-                            <th>สัญญาณล่าสุด</th>
+                            <th>สัญญาณล่าสุด (Last Seen)</th>
+                            <th>จัดการการเชื่อมต่อ</th>
                         </tr>
                     </thead>
                     <tbody id="bot-table-body">
-                        <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 30px;">ยังไม่มีบอทเชื่อมต่อเข้ามาในขณะนี้</td></tr>
+                        <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">🛰️ ยังไม่มีอุปกรณ์ส่งสัญญาณเข้ามาในขณะนี้</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Panel 2: License Keys Master Management -->
+        <!-- ═══════════════════════════════════════════ ZONE 2: KEY GENERATOR & LICENSE SUITE ═══ -->
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title-wrap">
                     <div class="panel-icon-box">🔑</div>
                     <div>
-                        <div class="panel-title">ระบบจัดการสิทธิ์การใช้งาน (License Keys Master Management)</div>
-                        <div class="panel-subtitle">สร้างคีย์ใหม่ จัดการอายุการใช้งาน และสั่งระงับสิทธิ์</div>
+                        <div class="zone-badge">ZONE 2 • LICENSE GENERATOR</div>
+                        <div class="panel-title">ระบบสร้างและจัดการคีย์ผลิตภัณฑ์ (License Keys Master Suite)</div>
+                        <div class="panel-subtitle">ออกคีย์สิทธิ์การใช้งานใหม่ และควบคุมวันหมดอายุของลูกค้า</div>
                     </div>
                 </div>
                 <button class="btn btn-gold" onclick="openKeyModal()">➕ สร้างคีย์ใหม่ (Generate Key)</button>
@@ -1051,17 +1072,43 @@ ADMIN_HTML = """<!DOCTYPE html>
                 <table>
                     <thead>
                         <tr>
-                            <th>รหัสคีย์ (License Key)</th>
-                            <th>ชื่อลูกค้า / ผู้ใช้</th>
+                            <th>รหัสคีย์ผลิตภัณฑ์ (Product License Key)</th>
+                            <th>ชื่อลูกค้า / ผู้ใช้งาน</th>
                             <th>สถานะสิทธิ์</th>
-                            <th>เครื่องที่ผูก (HWID)</th>
+                            <th>เครื่องที่ผูก (Bound HWID)</th>
                             <th>วันหมดอายุ</th>
-                            <th>จัดการคำสั่ง</th>
+                            <th>คำสั่งควบคุมสิทธิ์</th>
                         </tr>
                     </thead>
                     <tbody id="key-table-body">
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════ ZONE 3: REMOTE CONTROL & SECURITY SUITE ═══ -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title-wrap">
+                    <div class="panel-icon-box">🛑</div>
+                    <div>
+                        <div class="zone-badge">ZONE 3 • REMOTE DEVICE CONTROL</div>
+                        <div class="panel-title">ศูนย์ควบคุมและระงับเครื่องระยะไกล (Remote Security & Ban Suite)</div>
+                        <div class="panel-subtitle">ปลดล็อคเครื่องเพื่อให้ลูกค้าย้ายเครื่องใหม่ หรือสั่งระงับสิทธิ์ทันที</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding: 24px 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: var(--bg-input); border: 1px solid var(--gold-border); border-radius: var(--radius-md); padding: 20px;">
+                    <div style="font-size: 16px; font-weight: 800; color: var(--gold-primary); margin-bottom: 6px;">🔄 ปลดล็อค HWID (Reset Device Binding)</div>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">ใช้เมื่อลูกค้าเปลี่ยนคอมพิวเตอร์หรือลง Windows ใหม่ เพื่อให้ลูกค้านำคีย์เดิมไปเปิดใช้งานบนเครื่องใหม่ได้</p>
+                    <span style="font-size: 12px; color: var(--neon-green);">✓ สามารถกดปุ่ม [🔄 ปลดล็อค HWID] ในตาราง Zone 2 ได้ทันที</span>
+                </div>
+                <div style="background: var(--bg-input); border: 1px solid rgba(255, 59, 92, 0.35); border-radius: var(--radius-md); padding: 20px;">
+                    <div style="font-size: 16px; font-weight: 800; color: var(--neon-red); margin-bottom: 6px;">🚫 สั่งระงับสิทธิ์ทันที (Instant Ban / Kill Switch)</div>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">เมื่อสั่งระงับสิทธิ์ โปรแกรมหน้าบ้านและบอทของเครื่องเป้าหมายจะถูกสั่งหยุดการทำงานและตัดสิทธิ์การเทรดทันที</p>
+                    <span style="font-size: 12px; color: var(--neon-red);">✓ สามารถกดปุ่ม [🚫 ระงับคีย์] ในตาราง Zone 2 ได้ทันที</span>
+                </div>
             </div>
         </div>
 
@@ -1074,7 +1121,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             <div class="modal-title">✨ สร้างรหัสสิทธิ์การใช้งานใหม่ (New License)</div>
             <div class="form-group">
                 <label class="form-label">ชื่อลูกค้า (Customer Name)</label>
-                <input type="text" id="new-cust-name" class="form-control" placeholder="เช่น คุณสมชาย (VIP Member)">
+                <input type="text" id="new-cust-name" class="form-control" placeholder="เช่น คุณสมชาย (VIP Client)">
             </div>
             <div class="form-group">
                 <label class="form-label">ระยะเวลาสิทธิ์ (Duration)</label>
@@ -1084,7 +1131,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                     <option value="90">90 วัน (3 เดือน)</option>
                     <option value="180">180 วัน (6 เดือน)</option>
                     <option value="365">365 วัน (1 ปี)</option>
-                    <option value="29000">ตลอดชีพ (Lifetime VIP)</option>
+                    <option value="29000">ตลอดชีพ (Lifetime VIP Unlimited)</option>
                 </select>
             </div>
             <div class="form-group">
@@ -1127,7 +1174,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                 document.getElementById('nav-user-actions').style.display = 'flex';
                 fetchDashboard();
                 if (!window.refreshInterval) {
-                    window.refreshInterval = setInterval(fetchDashboard, 15000);
+                    window.refreshInterval = setInterval(fetchDashboard, 6000); // รีเฟรชสดทุก 6 วินาที
                 }
             } else {
                 document.getElementById('login-view').style.display = 'flex';
@@ -1167,7 +1214,7 @@ ADMIN_HTML = """<!DOCTYPE html>
                 errBox.style.display = 'block';
             } finally {
                 btn.disabled = false;
-                btn.innerText = '🚀 เข้าสู่ระบบเซิร์ฟเวอร์';
+                btn.innerText = '🔐 เข้าสู่ศูนย์บัญชาการ (ACCESS SYSTEM)';
             }
         }
 
@@ -1184,36 +1231,38 @@ ADMIN_HTML = """<!DOCTYPE html>
                 if (res.status === 401) { logout(); return; }
                 const data = await res.json();
 
-                // 1. Stats Counter
+                // 1. Stats Counter (Online / Active Keys / Offline)
                 document.getElementById('stat-online').innerText = data.stats.online_bots;
                 document.getElementById('stat-keys').innerText = `${data.stats.active_keys} / ${data.stats.total_keys}`;
-                document.getElementById('stat-balance').innerText = `$${data.stats.total_balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                
-                const profEl = document.getElementById('stat-profit');
-                const profVal = data.stats.total_profit;
-                profEl.innerText = `${profVal >= 0 ? '+' : ''}$${profVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                profEl.style.color = profVal >= 0 ? 'var(--neon-green)' : 'var(--neon-red)';
+                document.getElementById('stat-offline').innerText = data.stats.offline_bots;
 
-                // 2. Bots Radar Table
+                // 2. Zone 1: Bots Radar Table
                 const botTbody = document.getElementById('bot-table-body');
                 if (data.bots.length === 0) {
-                    botTbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 32px;">🛰️ ยังไม่มีบอทเชื่อมต่อเข้ามาในขณะนี้</td></tr>`;
+                    botTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">🛰️ ยังไม่มีอุปกรณ์ส่งสัญญาณเข้ามาในขณะนี้</td></tr>`;
                 } else {
                     botTbody.innerHTML = data.bots.map(b => `
                         <tr>
-                            <td><span class="badge ${b.is_online ? 'badge-online' : 'badge-offline'}"><span class="badge-dot"></span>${b.is_online ? '🟢 ออนไลน์' : '⚪ ออฟไลน์'}</span></td>
-                            <td><strong style="color: var(--gold-primary);">#${b.account_login || 'N/A'}</strong></td>
-                            <td style="color: var(--text-muted); font-size: 13px;">${b.broker_server || 'N/A'}</td>
-                            <td><strong>$${b.balance.toLocaleString()}</strong> <span style="color: var(--text-muted); font-size: 12px;">(Eq: $${b.equity.toLocaleString()})</span></td>
-                            <td style="color: ${b.profit_today >= 0 ? 'var(--neon-green)' : 'var(--neon-red)'}; font-weight: 700;">${b.profit_today >= 0 ? '+' : ''}$${b.profit_today.toFixed(2)}</td>
+                            <td>
+                                <span class="badge ${b.is_online ? 'badge-online' : 'badge-offline'}">
+                                    <span class="badge-dot"></span>${b.is_online ? '🟢 ออนไลน์ (ONLINE)' : '🔴 ออฟไลน์ (OFFLINE)'}
+                                </span>
+                            </td>
+                            <td><code style="background: rgba(255, 215, 0, 0.08); border: 1px solid rgba(255, 215, 0, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: 800; color: var(--gold-primary);">${b.hwid}</code></td>
+                            <td><strong style="color: #FFF;">#${b.account_login || 'N/A'}</strong></td>
+                            <td style="color: var(--text-muted); font-size: 13px;">${b.broker_server || 'Web Cockpit Engine'}</td>
                             <td><span class="badge badge-active">${b.open_orders} ไม้</span></td>
-                            <td><code style="background: rgba(255, 215, 0, 0.08); border: 1px solid rgba(255, 215, 0, 0.15); padding: 3px 8px; border-radius: 6px; font-size: 12px; color: var(--gold-primary);">${b.hwid ? b.hwid.substring(0, 12) + '...' : '-'}</code></td>
-                            <td style="color: var(--text-muted); font-size: 12px;">${b.last_seen_sec} วินาทีที่แล้ว</td>
+                            <td style="color: ${b.is_online ? 'var(--neon-green)' : 'var(--text-muted)'}; font-size: 13px; font-weight: 600;">
+                                ${b.is_online ? `⚡ ติดต่ออยู่ (${b.last_seen_sec}s ที่แล้ว)` : `⏳ ขาดการติดต่อ (${b.last_seen_sec}s ที่แล้ว)`}
+                            </td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" onclick="keyAction('${b.key_code}', 'BAN')">🛑 สั่งตัดการเชื่อมต่อ</button>
+                            </td>
                         </tr>
                     `).join('');
                 }
 
-                // 3. License Keys Table
+                // 3. Zone 2: License Keys Table
                 const keyTbody = document.getElementById('key-table-body');
                 keyTbody.innerHTML = data.keys.map(k => `
                     <tr>
@@ -1222,14 +1271,21 @@ ADMIN_HTML = """<!DOCTYPE html>
                             <div style="font-weight: 700; color: #FFF;">${k.customer_name}</div>
                             ${k.notes ? `<div style="color: var(--text-muted); font-size: 12px;">${k.notes}</div>` : ''}
                         </td>
-                        <td><span class="badge ${k.status === 'ACTIVE' ? 'badge-active' : (k.status === 'BANNED' ? 'badge-banned' : 'badge-offline')}"><span class="badge-dot"></span>${k.status}</span></td>
-                        <td style="font-size: 13px;">${k.hwid_bound ? `<code style="color: var(--neon-green); background: rgba(0, 230, 118, 0.08); padding: 3px 8px; border-radius: 6px;">${k.hwid_bound.substring(0, 14)}...</code>` : '<span style="color: var(--text-muted);">(ยังไม่ผูกเครื่อง)</span>'}</td>
+                        <td>
+                            <span class="badge ${k.status === 'ACTIVE' ? 'badge-active' : (k.status === 'BANNED' ? 'badge-banned' : 'badge-offline')}">
+                                <span class="badge-dot"></span>${k.status}
+                            </span>
+                        </td>
+                        <td style="font-size: 13px;">
+                            ${k.hwid_bound ? `<code style="color: var(--neon-green); background: rgba(0, 230, 118, 0.08); padding: 3px 8px; border-radius: 6px;">${k.hwid_bound}</code>` : '<span style="color: var(--text-muted);">(ยังไม่ผูกเครื่อง)</span>'}
+                        </td>
                         <td style="font-size: 13px; color: var(--text-muted);">${k.expires_at}</td>
                         <td>
                             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                                 ${k.hwid_bound ? `<button class="btn btn-outline btn-sm" onclick="keyAction('${k.key_code}', 'RESET_HWID')">🔄 ปลดล็อค HWID</button>` : ''}
                                 <button class="btn btn-outline btn-sm" onclick="keyAction('${k.key_code}', 'EXTEND_30D')">+30 วัน</button>
                                 ${k.status === 'ACTIVE' ? `<button class="btn btn-danger btn-sm" onclick="keyAction('${k.key_code}', 'BAN')">🚫 ระงับคีย์</button>` : `<button class="btn btn-success btn-sm" onclick="keyAction('${k.key_code}', 'ACTIVATE')">✅ เปิดใช้งาน</button>`}
+                                <button class="btn btn-danger btn-sm" style="padding: 6px 8px;" onclick="keyAction('${k.key_code}', 'DELETE')" title="ลบคีย์นี้">🗑️</button>
                             </div>
                         </td>
                     </tr>
@@ -1242,6 +1298,7 @@ ADMIN_HTML = """<!DOCTYPE html>
 
         async function keyAction(keyCode, action) {
             if (action === 'BAN' && !confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการระงับสิทธิ์คีย์นี้? บอทจะหยุดทำงานทันที!')) return;
+            if (action === 'DELETE' && !confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบคีย์นี้ออกจากระบบ?')) return;
             const fd = new FormData();
             fd.append('key_code', keyCode);
             fd.append('action', action);
