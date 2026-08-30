@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-👑 MR.KRIT AI ULTRA • MASTER CLOUD COMMAND CENTER (4K/12K INSTITUTIONAL)
+👑 MR.KRIT AI ULTRA • EXECUTIVE MASTER CLOUD GATEWAY & RADAR HUB
 =============================================================================
-ระบบศูนย์กลางจัดการคีย์ผลิตภัณฑ์ และศูนย์บัญชาการตรวจจับอุปกรณ์สด (Vercel Native)
-- Strict Dual Verification: Username + Key + HWID Matching
+Modern FinTech Glassmorphism Admin Command Center (Vercel Native)
+- Strict Dual Verification: Username + License Key + HWID
 - Instant Remote Revocation & Device Kick (KICK_LOGOUT)
-- Cyber-Gold Holographic Apex Admin GUI
+- Modern FinTech Glassmorphism Design System
 """
 
 import os
@@ -30,8 +30,8 @@ DB_FILE = "/tmp/central_hub.db" if os.environ.get("VERCEL") else os.path.join(os
 
 app = FastAPI(
     title="Mr.krit AI Central Cloud Gateway",
-    version="4.0.0",
-    description="Central License & Institutional Device Radar Hub"
+    version="5.0.0",
+    description="Executive License & Institutional Device Radar Hub"
 )
 
 app.add_middleware(
@@ -84,19 +84,6 @@ def init_db():
                 ip_address TEXT DEFAULT '',
                 status TEXT DEFAULT 'ONLINE',
                 remote_command TEXT DEFAULT 'NONE'
-            )
-        """)
-        
-        # Table: Software Releases (Auto-Update Server)
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS software_releases (
-                version TEXT PRIMARY KEY,
-                release_date TEXT,
-                download_url TEXT,
-                checksum TEXT DEFAULT '',
-                is_mandatory INTEGER DEFAULT 0,
-                changelog TEXT DEFAULT '',
-                created_at TEXT
             )
         """)
         
@@ -480,62 +467,67 @@ def admin_key_action(key_code: str = Form(...), action: str = Form(...), token: 
     return {"success": True}
 
 # -----------------------------------------------------------------------------
-# 4K/12K INSTITUTIONAL CYBER-GOLD MASTER ADMIN DASHBOARD
+# MODERN FINTECH GLASSMORPHISM MASTER ADMIN DASHBOARD (4K/RESPONSIVE)
 # -----------------------------------------------------------------------------
 ADMIN_HTML = """<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>👑 MR.KRIT AI ULTRA • EXECUTIVE MASTER CLOUD HUB</title>
+    <title>👑 Mr.krit AI Ultra • Executive License Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Prompt:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --gold-bright: #FCD34D;
-            --gold-primary: #E5B94C;
-            --gold-dark: #B88E28;
-            --gold-gradient: linear-gradient(135deg, #FDE68A 0%, #E5B94C 50%, #B88E28 100%);
-            --gold-glow: rgba(229, 185, 76, 0.35);
-            --gold-border: rgba(229, 185, 76, 0.25);
-            --gold-subtle: rgba(229, 185, 76, 0.08);
-            
-            --bg-deep: #05070B;
-            --bg-card: rgba(13, 19, 34, 0.88);
-            --bg-card-hover: rgba(18, 26, 44, 0.95);
-            --bg-input: #090E1A;
-            
-            --text-main: #F8FAFC;
+            --bg-base: #080C14;
+            --bg-surface: rgba(15, 23, 42, 0.65);
+            --bg-surface-elevated: rgba(30, 41, 59, 0.7);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --bg-glass-hover: rgba(255, 255, 255, 0.06);
+            --bg-input: rgba(15, 23, 42, 0.85);
+
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.16);
+            --border-cyan: rgba(6, 182, 212, 0.35);
+            --border-gold: rgba(234, 179, 8, 0.35);
+
+            --accent-cyan: #06B6D4;
+            --accent-cyan-glow: rgba(6, 182, 212, 0.25);
+            --accent-gold: #EAB308;
+            --accent-gold-glow: rgba(234, 179, 8, 0.25);
+            --accent-emerald: #10B981;
+            --accent-emerald-glow: rgba(16, 185, 129, 0.2);
+            --accent-rose: #F43F5E;
+            --accent-rose-glow: rgba(244, 63, 94, 0.2);
+
+            --text-primary: #F8FAFC;
             --text-secondary: #94A3B8;
             --text-muted: #64748B;
-            
-            --neon-green: #10B981;
-            --neon-red: #EF4444;
-            --neon-cyan: #06B6D4;
-            --neon-amber: #F59E0B;
-            
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --radius-lg: 16px;
+
+            --radius-xl: 18px;
+            --radius-lg: 14px;
             --radius-md: 10px;
             --radius-sm: 6px;
+            --radius-pill: 9999px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Prompt', 'Outfit', sans-serif;
+            font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--bg-deep);
+            background-color: var(--bg-base);
             background-image: 
-                radial-gradient(circle at 15% 10%, rgba(229, 185, 76, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 15%, rgba(6, 182, 212, 0.06) 0%, transparent 40%),
-                radial-gradient(circle at 50% 90%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 10% 10%, rgba(6, 182, 212, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 90% 15%, rgba(234, 179, 8, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 50% 90%, rgba(99, 102, 241, 0.04) 0%, transparent 50%);
             background-attachment: fixed;
-            color: var(--text-main);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -545,249 +537,260 @@ ADMIN_HTML = """<!DOCTYPE html>
         .mono { font-family: 'JetBrains Mono', monospace; }
 
         .container {
-            max-width: 1440px;
+            max-width: 1360px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px 20px;
             width: 100%;
         }
 
-        /* ─── APEX HEADER ─── */
-        .apex-header {
+        /* ─── MODERN GLASS HEADER ─── */
+        .glass-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: var(--bg-card);
-            border: 1px solid var(--gold-border);
-            border-radius: var(--radius-lg);
-            padding: 16px 24px;
+            background: var(--bg-surface);
             backdrop-filter: blur(20px);
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 16px 22px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
             flex-wrap: wrap;
-            gap: 14px;
+            gap: 16px;
         }
 
-        .brand-box {
+        .brand-group {
             display: flex;
             align-items: center;
             gap: 14px;
         }
 
-        .brand-icon {
-            font-size: 26px;
-            background: rgba(229, 185, 76, 0.15);
-            border: 1px solid var(--gold-primary);
-            width: 48px;
-            height: 48px;
+        .brand-avatar {
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.2) 0%, rgba(6, 182, 212, 0.15) 100%);
+            border: 1px solid var(--border-gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 15px var(--gold-glow);
+            font-size: 22px;
+            box-shadow: 0 0 15px var(--accent-gold-glow);
         }
 
-        .brand-title {
-            font-size: 19px;
+        .brand-info h1 {
+            font-size: 17px;
             font-weight: 800;
-            letter-spacing: 0.6px;
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             color: #FFFFFF;
         }
 
-        .brand-title span {
-            background: var(--gold-gradient);
+        .brand-info h1 span.highlight {
+            background: linear-gradient(135deg, #FDE047 0%, #EAB308 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .brand-sub {
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-weight: 600;
+        .brand-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: var(--radius-pill);
+            background: rgba(234, 179, 8, 0.15);
+            color: #FDE047;
+            border: 1px solid rgba(234, 179, 8, 0.3);
         }
 
-        .header-meta {
+        .brand-sub {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .header-controls {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
-        .status-badge {
+        .status-pill {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             padding: 6px 12px;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-pill);
             font-size: 11.5px;
-            font-weight: 700;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid var(--neon-green);
-            color: #A7F3D0;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #6EE7B7;
         }
 
-        .status-badge.red {
-            background: rgba(239, 68, 68, 0.12);
-            border-color: var(--neon-red);
-            color: #FCA5A5;
+        .dot-pulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            box-shadow: 0 0 8px var(--accent-emerald);
+            animation: pulseGlow 2s infinite ease-in-out;
         }
 
-        .status-badge.gold {
-            background: rgba(229, 185, 76, 0.15);
-            border-color: var(--gold-primary);
-            color: var(--gold-bright);
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
         }
 
-        .btn-action {
+        .btn-compact {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
+            padding: 7px 14px;
+            border-radius: var(--radius-md);
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 600;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
             cursor: pointer;
-            border: 1px solid var(--gold-border);
-            background: var(--gold-subtle);
-            color: var(--gold-bright);
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
         }
 
-        .btn-action:hover {
-            background: rgba(229, 185, 76, 0.25);
+        .btn-compact:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--border-hover);
             transform: translateY(-1px);
         }
 
-        .btn-action.btn-danger {
-            border-color: var(--neon-red);
-            background: rgba(239, 68, 68, 0.15);
-            color: #FCA5A5;
+        .btn-compact.danger {
+            background: rgba(244, 63, 94, 0.1);
+            border-color: rgba(244, 63, 94, 0.25);
+            color: #FDA4AF;
         }
 
-        .btn-action.btn-danger:hover {
-            background: rgba(239, 68, 68, 0.3);
+        .btn-compact.danger:hover {
+            background: rgba(244, 63, 94, 0.2);
+            border-color: var(--accent-rose);
         }
 
-        /* ─── ZONE 0: APEX METRICS ─── */
+        /* ─── METRIC STAT CARDS ─── */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .metric-card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
             border-radius: var(--radius-lg);
-            padding: 16px 20px;
+            padding: 18px 20px;
             display: flex;
             align-items: center;
             gap: 16px;
-            backdrop-filter: blur(15px);
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--gold-primary);
-        }
-
-        .metric-card.green::before { background: var(--neon-green); }
-        .metric-card.red::before { background: var(--neon-red); }
-        .metric-card.cyan::before { background: var(--neon-cyan); }
-
         .metric-card:hover {
             transform: translateY(-2px);
-            border-color: var(--gold-border);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            border-color: var(--border-hover);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .metric-icon-box {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.04);
+        .metric-icon-wrap {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            flex-shrink: 0;
         }
 
-        .metric-info {
+        .icon-emerald { background: rgba(16, 185, 129, 0.12); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .icon-rose { background: rgba(244, 63, 94, 0.12); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.2); }
+        .icon-gold { background: rgba(234, 179, 8, 0.12); color: var(--accent-gold); border: 1px solid rgba(234, 179, 8, 0.2); }
+        .icon-cyan { background: rgba(6, 182, 212, 0.12); color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.2); }
+
+        .metric-body {
             flex: 1;
         }
 
-        .metric-label {
+        .metric-title {
             font-size: 11px;
             font-weight: 700;
             color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
         }
 
-        .metric-val {
+        .metric-value {
             font-size: 24px;
-            font-weight: 900;
+            font-weight: 800;
             color: #FFFFFF;
-            font-family: 'JetBrains Mono', monospace;
             margin-top: 2px;
+            letter-spacing: -0.3px;
         }
 
-        .metric-val.gold { color: var(--gold-bright); }
-        .metric-val.green { color: var(--neon-green); }
-        .metric-val.red { color: var(--neon-red); }
-
-        /* ─── TAB NAVIGATION ─── */
-        .tab-bar {
+        /* ─── PILL-STYLE TAB NAVIGATION (NO HORIZONTAL OVERFLOW) ─── */
+        .tab-wrapper {
             display: flex;
-            gap: 8px;
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-md);
-            padding: 6px;
-            margin-bottom: 20px;
-            overflow-x: auto;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            padding: 5px;
+            margin-bottom: 24px;
+            gap: 4px;
+            flex-wrap: wrap;
         }
 
-        .tab-btn {
+        .tab-item {
+            flex: 1;
+            min-width: 140px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 18px;
-            border-radius: var(--radius-sm);
-            font-size: 13px;
-            font-weight: 700;
+            justify-content: center;
+            gap: 7px;
+            padding: 9px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 12.5px;
+            font-weight: 600;
             color: var(--text-secondary);
             background: transparent;
-            border: 1px solid transparent;
+            border: none;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             white-space: nowrap;
         }
 
-        .tab-btn:hover {
-            color: var(--text-main);
-            background: rgba(255, 255, 255, 0.03);
+        .tab-item:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
         }
 
-        .tab-btn.active {
-            background: var(--gold-subtle);
-            border-color: var(--gold-border);
-            color: var(--gold-bright);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        .tab-item.active {
+            color: #FFFFFF;
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(6, 182, 212, 0.2) 100%);
+            border: 1px solid rgba(234, 179, 8, 0.35);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .tab-pane {
             display: none;
-            animation: fadeIn 0.25s ease;
+            animation: fadeIn 0.25s ease-out;
         }
 
         .tab-pane.active { display: block; }
@@ -797,52 +800,105 @@ ADMIN_HTML = """<!DOCTYPE html>
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ─── ZONE CARDS & TABLES ─── */
-        .zone-card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg);
-            padding: 20px;
+        /* ─── CONTENT CARDS & UNIFIED TOOLBAR ─── */
+        .panel-card {
+            background: var(--bg-surface);
             backdrop-filter: blur(20px);
-            margin-bottom: 20px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 24px;
         }
 
-        .zone-header {
+        .panel-toolbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             flex-wrap: wrap;
             gap: 12px;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 12px;
         }
 
-        .zone-title {
-            font-size: 15px;
-            font-weight: 800;
-            color: #FFFFFF;
+        .panel-heading {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .zone-title span.tag {
-            font-size: 10px;
-            background: var(--gold-subtle);
-            color: var(--gold-bright);
-            border: 1px solid var(--gold-border);
-            padding: 2px 8px;
-            border-radius: 4px;
+        .panel-heading h2 {
+            font-size: 15px;
             font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.2px;
         }
 
-        /* Luxury Table */
-        .table-wrap {
-            overflow-x: auto;
+        .panel-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md);
-            border: 1px solid var(--glass-border);
+            padding: 8px 12px 8px 32px;
+            font-size: 12px;
+            color: var(--text-primary);
+            outline: none;
+            width: 220px;
+            transition: all 0.2s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan-glow);
+            width: 260px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            color: var(--text-muted);
+            pointer-events: none;
+            font-size: 12px;
+        }
+
+        .btn-primary-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #FDE047 0%, #EAB308 100%);
+            color: #0F172A;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 8px 16px;
+            font-size: 12.5px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--accent-gold-glow);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-pill:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(234, 179, 8, 0.4);
+        }
+
+        /* ─── DATA TABLES ─── */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            background: rgba(10, 15, 26, 0.6);
         }
 
         table {
@@ -853,77 +909,135 @@ ADMIN_HTML = """<!DOCTYPE html>
         }
 
         th {
-            background: rgba(11, 15, 26, 0.95);
-            color: var(--text-secondary);
-            padding: 12px 14px;
+            background: rgba(15, 23, 42, 0.85);
+            color: var(--text-muted);
+            padding: 12px 16px;
+            font-size: 11px;
             font-weight: 700;
-            border-bottom: 1px solid var(--glass-border);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border-bottom: 1px solid var(--border-subtle);
             white-space: nowrap;
-            letter-spacing: 0.4px;
         }
 
         td {
-            padding: 12px 14px;
+            padding: 13px 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
             vertical-align: middle;
         }
 
         tr:hover td {
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--bg-glass-hover);
         }
 
-        .badge-status {
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 9px;
+            border-radius: var(--radius-pill);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-active { background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.25); }
+        .badge-revoked { background: rgba(244, 63, 94, 0.12); color: #FDA4AF; border: 1px solid rgba(244, 63, 94, 0.25); }
+        .badge-expired { background: rgba(245, 158, 11, 0.12); color: #FDE68A; border: 1px solid rgba(245, 158, 11, 0.25); }
+
+        .key-tag {
+            background: rgba(234, 179, 8, 0.08);
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            color: #FDE047;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 3px 8px;
-            border-radius: 4px;
+        }
+
+        .key-tag:hover {
+            background: rgba(234, 179, 8, 0.18);
+            border-color: var(--accent-gold);
+        }
+
+        /* ─── ACTION BUTTONS IN TABLE ─── */
+        .btn-group-actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-icon {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 5px 9px;
+            border-radius: var(--radius-sm);
             font-size: 11px;
-            font-weight: 800;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .badge-status.active {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid var(--neon-green);
+        .btn-icon:hover {
+            background: var(--bg-glass-hover);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        .btn-icon.danger {
+            color: #FDA4AF;
+            background: rgba(244, 63, 94, 0.08);
+            border-color: rgba(244, 63, 94, 0.2);
+        }
+
+        .btn-icon.danger:hover {
+            background: rgba(244, 63, 94, 0.2);
+            border-color: var(--accent-rose);
+        }
+
+        .btn-icon.success {
             color: #6EE7B7;
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.2);
         }
 
-        .badge-status.revoked {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid var(--neon-red);
-            color: #FCA5A5;
+        .btn-icon.success:hover {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--accent-emerald);
         }
 
-        .badge-status.expired {
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px solid var(--neon-amber);
-            color: #FDE68A;
-        }
-
-        /* Forms & Inputs */
+        /* ─── FORM & INPUTS (ZONE 3) ─── */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 16px;
             margin-bottom: 16px;
         }
 
-        .form-group {
+        .form-control {
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
 
-        .form-label {
+        .form-control label {
             font-size: 11.5px;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--text-secondary);
         }
 
-        .form-input, .form-select {
+        .form-control input, .form-control select {
             background: var(--bg-input);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
             padding: 10px 14px;
             color: #FFFFFF;
             font-size: 13px;
@@ -931,87 +1045,57 @@ ADMIN_HTML = """<!DOCTYPE html>
             transition: all 0.2s ease;
         }
 
-        .form-input:focus, .form-select:focus {
-            border-color: var(--gold-primary);
-            box-shadow: 0 0 10px var(--gold-glow);
+        .form-control input:focus, .form-control select:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px var(--accent-gold-glow);
         }
 
-        .preset-btns {
+        .preset-container {
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
-        .btn-preset {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--glass-border);
+        .preset-btn {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
             padding: 4px 10px;
-            border-radius: 4px;
+            border-radius: var(--radius-sm);
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.15s ease;
         }
 
-        .btn-preset:hover {
-            border-color: var(--gold-primary);
-            color: var(--gold-bright);
+        .preset-btn:hover {
+            background: rgba(234, 179, 8, 0.12);
+            border-color: var(--accent-gold);
+            color: #FDE047;
         }
 
-        .btn-primary-gold {
-            background: var(--gold-gradient);
-            color: #05070B;
-            border: none;
-            border-radius: var(--radius-sm);
-            padding: 12px 24px;
-            font-size: 13.5px;
-            font-weight: 900;
-            cursor: pointer;
-            box-shadow: 0 4px 15px var(--gold-glow);
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-primary-gold:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(229, 185, 76, 0.5);
-        }
-
-        /* Result Key Banner */
-        .key-result-box {
-            background: rgba(229, 185, 76, 0.08);
-            border: 1px solid var(--gold-primary);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            margin-top: 16px;
+        .generated-key-banner {
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.1) 0%, rgba(6, 182, 212, 0.08) 100%);
+            border: 1px solid rgba(234, 179, 8, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            margin-top: 20px;
             display: none;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
             flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .key-text {
-            font-size: 16px;
-            font-weight: 900;
-            color: var(--gold-bright);
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 1px;
-        }
-
-        /* Modal */
-        .auth-overlay {
+        /* ─── AUTH OVERLAY ─── */
+        .auth-backdrop {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(5, 7, 11, 0.95);
+            background: rgba(8, 12, 20, 0.95);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1019,14 +1103,14 @@ ADMIN_HTML = """<!DOCTYPE html>
             backdrop-filter: blur(25px);
         }
 
-        .auth-card {
-            background: #0D1322;
-            border: 2px solid var(--gold-primary);
-            border-radius: var(--radius-lg);
-            padding: 32px;
+        .auth-dialog {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-xl);
+            padding: 36px 32px;
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px var(--gold-glow);
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--accent-gold-glow);
             text-align: center;
         }
     </style>
@@ -1034,130 +1118,140 @@ ADMIN_HTML = """<!DOCTYPE html>
 <body>
 
     <!-- AUTH MODAL -->
-    <div class="auth-overlay" id="admin-auth-gate" style="display: none;">
-        <div class="auth-card">
-            <div style="font-size: 36px; margin-bottom: 12px;">👑</div>
-            <h2 style="color: #FFFFFF; font-size: 20px; font-weight: 800; margin-bottom: 4px;">MASTER ADMIN PORTAL</h2>
-            <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 24px;">กรุณากรอกรหัสผ่านผู้ดูแลระบบระดับสูงเพื่อเข้าสู่ศูนย์บัญชาการ</p>
+    <div class="auth-backdrop" id="admin-auth-gate" style="display: none;">
+        <div class="auth-dialog">
+            <div style="font-size: 38px; margin-bottom: 12px;">👑</div>
+            <h2 style="color: #FFFFFF; font-size: 19px; font-weight: 800; margin-bottom: 4px;">EXECUTIVE MASTER PORTAL</h2>
+            <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 24px;">กรุณากรอกรหัสผ่านผู้ดูแลระบบระดับสูงเพื่อเข้าสู่ศูนย์ควบคุม</p>
             
             <form id="admin-login-form" onsubmit="event.preventDefault(); handleAdminLogin();">
-                <div style="margin-bottom: 14px; text-align: left;">
-                    <label class="form-label">ชื่อผู้ดูแลระบบ (Username):</label>
-                    <input type="text" id="admin-user-input" class="form-input" style="width: 100%;" value="admin" required>
+                <div class="form-control" style="margin-bottom: 14px; text-align: left;">
+                    <label>ชื่อผู้ดูแลระบบ (Username)</label>
+                    <input type="text" id="admin-user-input" value="admin" required>
                 </div>
-                <div style="margin-bottom: 20px; text-align: left;">
-                    <label class="form-label">รหัสผ่าน (Password):</label>
-                    <input type="password" id="admin-pass-input" class="form-input" style="width: 100%;" placeholder="••••••••" required>
+                <div class="form-control" style="margin-bottom: 22px; text-align: left;">
+                    <label>รหัสผ่าน (Password)</label>
+                    <input type="password" id="admin-pass-input" placeholder="••••••••" required>
                 </div>
-                <button type="submit" class="btn-primary-gold" style="width: 100%;">
-                    <span>🔓 ปลดล็อกเข้าสู่ระบบ (ACCESS DASHBOARD)</span>
+                <button type="submit" class="btn-primary-pill" style="width: 100%; justify-content: center; padding: 11px;">
+                    <span>🔓 ปลดล็อกเข้าสู่ศูนย์ควบคุม (ENTER)</span>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- MAIN APP CONTAINER -->
+    <!-- MAIN DASHBOARD -->
     <div class="container">
         
-        <!-- APEX HEADER -->
-        <header class="apex-header">
-            <div class="brand-box">
-                <div class="brand-icon">👑</div>
-                <div>
-                    <div class="brand-title">Mr.krit AI learning <span>Ultra XXXX</span></div>
-                    <div class="brand-sub">EXECUTIVE MASTER CLOUD HUB &amp; LICENSE RADAR (v25.0 VIP)</div>
+        <!-- TOP NAVIGATION & HEADER -->
+        <header class="glass-header">
+            <div class="brand-group">
+                <div class="brand-avatar">👑</div>
+                <div class="brand-info">
+                    <h1>Mr.krit AI Ultra <span class="highlight">XXXX</span> <span class="brand-badge">v25.0 VIP</span></h1>
+                    <div class="brand-sub">Executive License Gateway &amp; Real-time Device Radar</div>
                 </div>
             </div>
 
-            <div class="header-meta">
-                <span class="status-badge gold">👑 MASTER ADMIN: Mr. Krit</span>
-                <span class="status-badge" id="cloud-gateway-status">🟢 EDGE GATEWAY: ONLINE</span>
-                <span class="status-badge gold mono" id="server-clock">--:--:--</span>
-                <button type="button" class="btn-action" onclick="loadOverviewData()">🔄 รีเฟรชข้อมูลสด</button>
-                <button type="button" class="btn-action btn-danger" onclick="handleAdminLogout()">🚪 ออกจากระบบ</button>
+            <div class="header-controls">
+                <div class="status-pill">
+                    <span class="dot-pulse"></span>
+                    <span id="cloud-gateway-status">Edge Gateway Active</span>
+                </div>
+                <div class="btn-compact mono" id="server-clock" style="color: var(--accent-gold);">--:--:--</div>
+                <button type="button" class="btn-compact" onclick="loadOverviewData()" title="รีเฟรชข้อมูล">
+                    <span>🔄 รีเฟรช</span>
+                </button>
+                <button type="button" class="btn-compact danger" onclick="handleAdminLogout()" title="ออกจากระบบ">
+                    <span>🚪 ออกจากระบบ</span>
+                </button>
             </div>
         </header>
 
-        <!-- ZONE 0: APEX METRICS CARDS -->
+        <!-- ZONE 0: STAT CARDS -->
         <div class="metrics-grid">
-            <div class="metric-card green">
-                <div class="metric-icon-box">🟢</div>
-                <div class="metric-info">
-                    <div class="metric-label">บอทที่ออนไลน์สด (Live Active Bots)</div>
-                    <div class="metric-val green" id="metric-online">0</div>
-                </div>
-            </div>
-
-            <div class="metric-card red">
-                <div class="metric-icon-box">🔴</div>
-                <div class="metric-info">
-                    <div class="metric-label">อุปกรณ์ที่ออฟไลน์ (Offline Devices)</div>
-                    <div class="metric-val red" id="metric-offline">0</div>
+            <div class="metric-card">
+                <div class="metric-icon-wrap icon-emerald">🟢</div>
+                <div class="metric-body">
+                    <div class="metric-title">บอทที่ออนไลน์สด (Live Bots)</div>
+                    <div class="metric-value" style="color: #6EE7B7;" id="metric-online">0</div>
                 </div>
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon-box">🔑</div>
-                <div class="metric-info">
-                    <div class="metric-label">คีย์สิทธิ์ที่เปิดใช้งาน (Active Keys)</div>
-                    <div class="metric-val gold" id="metric-keys">0 / 0</div>
+                <div class="metric-icon-wrap icon-rose">🔴</div>
+                <div class="metric-body">
+                    <div class="metric-title">อุปกรณ์ที่ออฟไลน์ (Offline)</div>
+                    <div class="metric-value" style="color: #FDA4AF;" id="metric-offline">0</div>
                 </div>
             </div>
 
-            <div class="metric-card cyan">
-                <div class="metric-icon-box">💰</div>
-                <div class="metric-info">
-                    <div class="metric-label">กำไรสะสมรวมลูกค้า (Aggregate PnL)</div>
-                    <div class="metric-val" id="metric-pnl" style="color: var(--neon-cyan);">$0.00</div>
+            <div class="metric-card">
+                <div class="metric-icon-wrap icon-gold">🔑</div>
+                <div class="metric-body">
+                    <div class="metric-title">คีย์ที่เปิดใช้งาน (Active Keys)</div>
+                    <div class="metric-value" style="color: #FDE047;" id="metric-keys">0 / 0</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon-wrap icon-cyan">💰</div>
+                <div class="metric-body">
+                    <div class="metric-title">กำไรสะสมรวมลูกค้า (Total PnL)</div>
+                    <div class="metric-value" style="color: #67E8F9;" id="metric-pnl">$0.00</div>
                 </div>
             </div>
         </div>
 
-        <!-- MODERN TAB BAR -->
-        <div class="tab-bar">
-            <button type="button" class="tab-btn active" onclick="switchTab('tab-radar', this)">
-                <span>🛰️ โซน 1: เรดาร์อุปกรณ์และสถานะสด (Live Devices Radar)</span>
+        <!-- PILL-STYLE COMPACT TAB NAVIGATION -->
+        <nav class="tab-wrapper">
+            <button type="button" class="tab-item active" onclick="switchTab('tab-radar', this)">
+                <span>🛰️ เรดาร์อุปกรณ์สด (Live Radar)</span>
             </button>
-            <button type="button" class="tab-btn" onclick="switchTab('tab-keys', this)">
-                <span>🔑 โซน 2: ศูนย์คลังสิทธิ์และข้อมูลลูกค้า (License &amp; Customer Vault)</span>
+            <button type="button" class="tab-item" onclick="switchTab('tab-keys', this)">
+                <span>🔑 คลังคีย์สิทธิ์และลูกค้า (License Vault)</span>
             </button>
-            <button type="button" class="tab-btn" onclick="switchTab('tab-generate', this)">
-                <span>⚡ โซน 3: สร้างคีย์ผลิตภัณฑ์ใหม่ (Quick Key Generator)</span>
+            <button type="button" class="tab-item" onclick="switchTab('tab-generate', this)">
+                <span>⚡ สร้างคีย์ด่วน (Key Generator)</span>
             </button>
-            <button type="button" class="tab-btn" onclick="switchTab('tab-security', this)">
-                <span>🛡️ โซน 4: บรอดแคสต์และระบบความปลอดภัย (Security &amp; Protocol)</span>
+            <button type="button" class="tab-item" onclick="switchTab('tab-security', this)">
+                <span>🛡️ ความปลอดภัย (Security &amp; Alerts)</span>
             </button>
-        </div>
+        </nav>
 
         <!-- ══════════════════════════════════════════════════════════════════
              TAB 1: LIVE RADAR (ZONE 1)
         ══════════════════════════════════════════════════════════════════ -->
         <div class="tab-pane active" id="tab-radar">
-            <div class="zone-card">
-                <div class="zone-header">
-                    <div class="zone-title">
-                        <span>🛰️ ตรวจจับและติดตามอุปกรณ์เทรดสด (LIVE CONNECTED OPERATORS)</span>
-                        <span class="tag">REAL-TIME 30 FPS</span>
+            <div class="panel-card">
+                <div class="panel-toolbar">
+                    <div class="panel-heading">
+                        <h2>🛰️ อุปกรณ์เทรดที่กำลังเชื่อมต่อสด (Live Connected Units)</h2>
                     </div>
-                    <input type="text" id="radar-search" class="form-input" placeholder="🔍 ค้นหา HWID / บัญชี MT5..." onkeyup="filterRadarTable()" style="max-width: 260px; padding: 6px 12px; font-size: 12px;">
+                    <div class="panel-actions">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="radar-search" placeholder="ค้นหา HWID / บัญชี MT5..." onkeyup="filterRadarTable()">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="table-wrap">
+                <div class="table-responsive">
                     <table id="table-radar">
                         <thead>
                             <tr>
                                 <th>สถานะ</th>
                                 <th>รหัสเครื่อง (HWID)</th>
-                                <th>ชื่อผู้ใช้ / ผู้ถือสิทธิ์</th>
-                                <th>บัญชี MT5 / โหมด</th>
-                                <th>ยอด Balance</th>
+                                <th>ผู้ใช้งาน / ลูกค้า</th>
+                                <th>บัญชี MT5</th>
+                                <th>Balance</th>
                                 <th>กำไรสด (PnL)</th>
                                 <th>สัญญาณล่าสุด</th>
-                                <th>คำสั่งจัดการด่วน</th>
+                                <th>คำสั่งจัดการ</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-radar">
-                            <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">⏳ กำลังเชื่อมต่อข้อมูลอุปกรณ์สด...</td></tr>
+                            <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 28px;">⏳ กำลังเชื่อมต่อข้อมูลอุปกรณ์สด...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1168,33 +1262,37 @@ ADMIN_HTML = """<!DOCTYPE html>
              TAB 2: LICENSE VAULT (ZONE 2)
         ══════════════════════════════════════════════════════════════════ -->
         <div class="tab-pane" id="tab-keys">
-            <div class="zone-card">
-                <div class="zone-header">
-                    <div class="zone-title">
-                        <span>🔑 คลังคีย์ผลิตภัณฑ์และชื่อผู้ใช้งาน (LICENSE &amp; CUSTOMER VAULT)</span>
-                        <span class="tag">STRICT DUAL AUTH</span>
+            <div class="panel-card">
+                <div class="panel-toolbar">
+                    <div class="panel-heading">
+                        <h2>🔑 คลังคีย์ผลิตภัณฑ์และข้อมูลลูกค้า (License &amp; Customer Vault)</h2>
                     </div>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="keys-search" class="form-input" placeholder="🔍 ค้นหาคีย์ / ชื่อลูกค้า..." onkeyup="filterKeysTable()" style="max-width: 240px; padding: 6px 12px; font-size: 12px;">
-                        <button type="button" class="btn-action" onclick="switchTab('tab-generate', document.querySelectorAll('.tab-btn')[2])">➕ ออกคีย์ใหม่</button>
+                    <div class="panel-actions">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="keys-search" placeholder="ค้นหาคีย์ / ชื่อลูกค้า..." onkeyup="filterKeysTable()">
+                        </div>
+                        <button type="button" class="btn-primary-pill" onclick="switchTab('tab-generate', document.querySelectorAll('.tab-item')[2])">
+                            <span>➕ ออกคีย์ใหม่</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="table-wrap">
+                <div class="table-responsive">
                     <table id="table-keys">
                         <thead>
                             <tr>
-                                <th>รหัสคีย์ผลิตภัณฑ์ (PASSWORD KEY)</th>
-                                <th>ชื่อผู้ใช้งาน / ลูกค้า (USERNAME)</th>
-                                <th>สถานะสิทธิ์</th>
-                                <th>เครื่องที่ผูก (BOUND HWID)</th>
-                                <th>วันหมดอายุ (EXPIRY DATE)</th>
+                                <th>รหัสคีย์ผลิตภัณฑ์ (License Key)</th>
+                                <th>ชื่อผู้ใช้งาน (Username)</th>
+                                <th>สถานะ</th>
+                                <th>เครื่องที่ผูก (Bound HWID)</th>
+                                <th>วันหมดอายุ</th>
                                 <th>หมายเหตุ</th>
                                 <th>คำสั่งจัดการสิทธิ์</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-keys">
-                            <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">⏳ กำลังโหลดรายการคีย์ลิขสิทธิ์...</td></tr>
+                            <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 28px;">⏳ กำลังโหลดรายการคีย์ลิขสิทธิ์...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1205,36 +1303,35 @@ ADMIN_HTML = """<!DOCTYPE html>
              TAB 3: QUICK KEY GENERATOR (ZONE 3)
         ══════════════════════════════════════════════════════════════════ -->
         <div class="tab-pane" id="tab-generate">
-            <div class="zone-card" style="max-width: 800px; margin: 0 auto;">
-                <div class="zone-header">
-                    <div class="zone-title">
-                        <span>⚡ สร้างคีย์ผลิตภัณฑ์ใหม่ (GENERATE PRODUCT KEY)</span>
-                        <span class="tag">CRYPTOGRAPHIC HMAC</span>
+            <div class="panel-card" style="max-width: 840px; margin: 0 auto;">
+                <div class="panel-toolbar">
+                    <div class="panel-heading">
+                        <h2>⚡ สร้างคีย์ผลิตภัณฑ์ใหม่ (Generate Product Key)</h2>
                     </div>
                 </div>
 
                 <form id="key-gen-form" onsubmit="event.preventDefault(); handleCreateKey();">
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">1. ชื่อผู้ใช้งาน / ลูกค้า (CUSTOMER USERNAME) <span style="color: var(--neon-red);">*จำเป็น (ต้องตรงกับตอนเข้าโปรแกรม)</span>:</label>
-                            <input type="text" id="gen-customer-name" class="form-input" placeholder="เช่น Mr. Krit, TraderVIP01" required>
+                        <div class="form-control">
+                            <label>ชื่อผู้ใช้งาน / ลูกค้า (Customer Username) <span style="color: var(--accent-rose);">*จำเป็น</span></label>
+                            <input type="text" id="gen-customer-name" placeholder="เช่น JohnTrader, VIP001" required>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label">2. ช่องทางติดต่อ (LINE / Telegram / เบอร์โทร):</label>
-                            <input type="text" id="gen-customer-contact" class="form-input" placeholder="เช่น @line_id หรือ 081-xxx-xxxx">
+                        <div class="form-control">
+                            <label>ช่องทางติดต่อ (LINE ID / Tel / Telegram)</label>
+                            <input type="text" id="gen-customer-contact" placeholder="เช่น @line_id หรือ 081-xxx-xxxx">
                         </div>
                     </div>
 
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">3. ผูกรหัส HWID เฉพาะเครื่อง (เว้นว่างไว้เพื่อผูกอัตโนมัติเมื่อเปิดครั้งแรก):</label>
-                            <input type="text" id="gen-hwid-bound" class="form-input mono" placeholder="เว้นว่างไว้ หรือกรอก HWID 12 หลัก">
+                        <div class="form-control">
+                            <label>ผูกรหัส HWID ล่วงหน้า (เว้นว่างไว้เพื่อผูกอัตโนมัติเมื่อเปิดครั้งแรก)</label>
+                            <input type="text" id="gen-hwid-bound" class="mono" placeholder="เว้นว่าง หรือกรอก HWID 12 หลัก">
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label">4. เลือกระยะเวลาสิทธิ์ (DURATION PRESET):</label>
-                            <select id="gen-duration" class="form-select">
+                        <div class="form-control">
+                            <label>เลือกระยะเวลาสิทธิ์การใช้งาน (Duration Preset)</label>
+                            <select id="gen-duration">
                                 <option value="1">1 วัน (ทดสอบด่วน)</option>
                                 <option value="7">7 วัน (ทดลอง 1 สัปดาห์)</option>
                                 <option value="30" selected>30 วัน (1 เดือน)</option>
@@ -1243,61 +1340,61 @@ ADMIN_HTML = """<!DOCTYPE html>
                                 <option value="365">365 วัน (1 ปีเต็ม)</option>
                                 <option value="29000">ตลอดชีพ (Lifetime VIP)</option>
                             </select>
-                            <div class="preset-btns">
-                                <button type="button" class="btn-preset" onclick="document.getElementById('gen-duration').value='1'">1 วัน</button>
-                                <button type="button" class="btn-preset" onclick="document.getElementById('gen-duration').value='7'">7 วัน</button>
-                                <button type="button" class="btn-preset" onclick="document.getElementById('gen-duration').value='30'">30 วัน</button>
-                                <button type="button" class="btn-preset" onclick="document.getElementById('gen-duration').value='90'">90 วัน</button>
-                                <button type="button" class="btn-preset" onclick="document.getElementById('gen-duration').value='365'">1 ปี</button>
-                                <button type="button" class="btn-preset" onclick="document.getElementById('gen-duration').value='29000'">ตลอดชีพ</button>
+                            <div class="preset-container">
+                                <button type="button" class="preset-btn" onclick="document.getElementById('gen-duration').value='1'">1 วัน</button>
+                                <button type="button" class="preset-btn" onclick="document.getElementById('gen-duration').value='7'">7 วัน</button>
+                                <button type="button" class="preset-btn" onclick="document.getElementById('gen-duration').value='30'">30 วัน</button>
+                                <button type="button" class="preset-btn" onclick="document.getElementById('gen-duration').value='90'">90 วัน</button>
+                                <button type="button" class="preset-btn" onclick="document.getElementById('gen-duration').value='365'">1 ปี</button>
+                                <button type="button" class="preset-btn" onclick="document.getElementById('gen-duration').value='29000'">ตลอดชีพ</button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label class="form-label">5. หมายเหตุ / บันทึกเพิ่มเติม:</label>
-                        <input type="text" id="gen-notes" class="form-input" placeholder="เช่น ลูกค้าแพ็กเกจ Gold Sniper 2026">
+                    <div class="form-control" style="margin-bottom: 20px;">
+                        <label>หมายเหตุ / รายละเอียดแพ็กเกจ</label>
+                        <input type="text" id="gen-notes" placeholder="เช่น ลูกค้าแพ็กเกจ Gold VIP 2026">
                     </div>
 
-                    <button type="submit" class="btn-primary-gold" style="width: 100%;">
-                        <span>⚡ สร้างคีย์ลิขสิทธิ์และผูกชื่อผู้ใช้ทันที (GENERATE KEY)</span>
+                    <button type="submit" class="btn-primary-pill" style="width: 100%; justify-content: center; padding: 12px; font-size: 13.5px;">
+                        <span>⚡ สร้างคีย์ลิขสิทธิ์และบันทึกสิทธิ์ทันที (GENERATE KEY)</span>
                     </button>
                 </form>
 
-                <div class="key-result-box" id="key-result-box">
+                <div class="generated-key-banner" id="key-result-box">
                     <div>
                         <div style="font-size: 11px; color: var(--text-secondary); font-weight: 700;">🎉 คีย์ผลิตภัณฑ์ถูกสร้างเรียบร้อยแล้ว:</div>
-                        <div class="key-text" id="key-result-text">KRIT-30D-XXXX-YYYY</div>
-                        <div style="font-size: 11.5px; color: #FFFFFF; margin-top: 4px;" id="key-result-meta">ผู้ใช้งาน: Mr. Krit | หมดอายุ: 2026-09-30</div>
+                        <div class="mono" style="font-size: 17px; font-weight: 800; color: #FDE047; margin: 3px 0;" id="key-result-text">KRIT-30D-XXXX-YYYY</div>
+                        <div style="font-size: 11.5px; color: #FFFFFF;" id="key-result-meta">ผู้ใช้งาน: Mr. Krit | หมดอายุ: 2026-09-30</div>
                     </div>
-                    <button type="button" class="btn-action" onclick="copyResultKey()">📋 คัดลอกส่งให้ลูกค้า</button>
+                    <button type="button" class="btn-compact" onclick="copyResultKey()">📋 คัดลอกส่งลูกค้า</button>
                 </div>
             </div>
         </div>
 
         <!-- ══════════════════════════════════════════════════════════════════
-             TAB 4: SECURITY & PROTOCOL (ZONE 4)
+             TAB 4: SECURITY & ALERTS (ZONE 4)
         ══════════════════════════════════════════════════════════════════ -->
         <div class="tab-pane" id="tab-security">
-            <div class="zone-card">
-                <div class="zone-header">
-                    <div class="zone-title">
-                        <span>🛡️ ความปลอดภัยและระบบคำสั่งฉุกเฉิน (SECURITY &amp; PROTOCOL)</span>
+            <div class="panel-card">
+                <div class="panel-toolbar">
+                    <div class="panel-heading">
+                        <h2>🛡️ ระบบความปลอดภัยและคำสั่งฉุกเฉิน (Security &amp; Broadcast)</h2>
                     </div>
                 </div>
 
                 <div class="form-grid">
-                    <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 16px;">
-                        <h4 style="color: var(--gold-bright); font-size: 14px; margin-bottom: 8px;">📢 ส่งข้อความบรอดแคสต์ (Global Broadcast Alert)</h4>
-                        <p style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 12px;">ส่งข้อความประกาศด่วนขึ้นหน้าจอ Web Cockpit ของผู้ใช้งานทุกคนทันที</p>
-                        <input type="text" id="broadcast-msg" class="form-input" placeholder="พิมพ์ข้อความ เช่น มีการปรับปรุงระบบเวลา 23:00 น." style="width: 100%; margin-bottom: 10px;">
-                        <button type="button" class="btn-action" onclick="alert('✅ ส่งข้อความประกาศเข้าทุกหน้าจอเรียบร้อยแล้ว')">📢 ส่งข้อความด่วน</button>
+                    <div style="background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 18px;">
+                        <h3 style="color: var(--accent-gold); font-size: 14px; margin-bottom: 8px;">📢 ส่งข้อความประกาศด่วน (Global Broadcast)</h3>
+                        <p style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 12px;">ส่งข้อความแจ้งเตือนขึ้นหน้าจอ Web Cockpit ของผู้ใช้งานทุกคนทันที</p>
+                        <input type="text" id="broadcast-msg" class="form-control input" placeholder="พิมพ์ข้อความ เช่น ปรับปรุงระบบเวลา 23:00 น." style="width: 100%; margin-bottom: 10px; background:var(--bg-input); border:1px solid var(--border-subtle); padding:8px 12px; border-radius:var(--radius-md); color:#FFF; font-size:12px;">
+                        <button type="button" class="btn-compact" onclick="alert('✅ ส่งข้อความประกาศเข้าทุกหน้าจอเรียบร้อยแล้ว')">📢 ส่งข้อความทันที</button>
                     </div>
 
-                    <div style="background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.2); border-radius: var(--radius-md); padding: 16px;">
-                        <h4 style="color: var(--neon-red); font-size: 14px; margin-bottom: 8px;">🚨 สั่งหยุดฉุกเฉินทั้งหมด (Emergency Killswitch)</h4>
+                    <div style="background: rgba(244, 63, 94, 0.04); border: 1px solid rgba(244, 63, 94, 0.2); border-radius: var(--radius-lg); padding: 18px;">
+                        <h3 style="color: var(--accent-rose); font-size: 14px; margin-bottom: 8px;">🚨 สั่งหยุดฉุกเฉินทั้งหมด (Emergency Killswitch)</h3>
                         <p style="font-size: 11.5px; color: var(--text-secondary); margin-bottom: 12px;">ส่งคำสั่งเตะอุปกรณ์ที่กำลังออนไลน์ทั้งหมดออกจากระบบทันที</p>
-                        <button type="button" class="btn-action btn-danger" onclick="if(confirm('⚠️ ยืนยันการสั่งตัดสัญญาณและเตะอุปกรณ์ทั้งหมดออกจากระบบทันทีหรือไม่?')) alert('⛔ ส่งสัญญาณ KICK_ALL เรียบร้อยแล้ว')">🚨 EMERGENCY KICK ALL</button>
+                        <button type="button" class="btn-compact danger" onclick="if(confirm('⚠️ ยืนยันการสั่งตัดสัญญาณและเตะอุปกรณ์ทั้งหมดออกจากระบบทันทีหรือไม่?')) alert('⛔ ส่งสัญญาณ KICK_ALL เรียบร้อยแล้ว')">🚨 EMERGENCY KICK ALL</button>
                     </div>
                 </div>
             </div>
@@ -1310,7 +1407,6 @@ ADMIN_HTML = """<!DOCTYPE html>
         let adminToken = localStorage.getItem("mrkrit_admin_token") || "";
         let overviewData = { stats: {}, bots: [], keys: [] };
 
-        // Initialize
         document.addEventListener("DOMContentLoaded", () => {
             setInterval(updateClock, 1000);
             updateClock();
@@ -1329,7 +1425,7 @@ ADMIN_HTML = """<!DOCTYPE html>
             } else {
                 if (gate) gate.style.display = "none";
                 loadOverviewData();
-                setInterval(loadOverviewData, 8000); // Polling every 8 seconds
+                setInterval(loadOverviewData, 8000);
             }
         }
 
@@ -1365,7 +1461,7 @@ ADMIN_HTML = """<!DOCTYPE html>
 
         function switchTab(tabId, btn) {
             document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
-            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            document.querySelectorAll(".tab-item").forEach(b => b.classList.remove("active"));
             const target = document.getElementById(tabId);
             if (target) target.classList.add("active");
             if (btn) btn.classList.add("active");
@@ -1397,25 +1493,25 @@ ADMIN_HTML = """<!DOCTYPE html>
             // Radar Table
             const tbodyRadar = document.getElementById("tbody-radar");
             if (!data.bots || data.bots.length === 0) {
-                tbodyRadar.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">🛰️ ยังไม่มีอุปกรณ์ส่งสัญญาณเข้ามาในขณะนี้</td></tr>';
+                tbodyRadar.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 28px;">🛰️ ยังไม่มีอุปกรณ์ส่งสัญญาณเข้ามาในขณะนี้</td></tr>';
             } else {
                 tbodyRadar.innerHTML = data.bots.map(b => {
                     const isOnline = b.is_online;
-                    const statusClass = isOnline ? "active" : "revoked";
+                    const statusClass = isOnline ? "badge-active" : "badge-revoked";
                     const statusText = isOnline ? "🟢 ONLINE" : "🔴 OFFLINE";
                     const pnlVal = parseFloat(b.profit_today || 0);
-                    const pnlColor = pnlVal >= 0 ? "var(--neon-green)" : "var(--neon-red)";
+                    const pnlColor = pnlVal >= 0 ? "var(--accent-emerald)" : "var(--accent-rose)";
                     return `
                         <tr>
-                            <td><span class="badge-status ${statusClass}">${statusText}</span></td>
-                            <td class="mono" style="font-weight: 800; color: var(--gold-bright);">${b.hwid || 'N/A'}</td>
-                            <td style="font-weight: 700; color: #FFFFFF;">${b.customer_name || 'ลูกค้าทั่วไป'}</td>
+                            <td><span class="badge-pill ${statusClass}">${statusText}</span></td>
+                            <td class="mono" style="font-weight: 700; color: #FDE047;">${b.hwid || 'N/A'}</td>
+                            <td style="font-weight: 600; color: #FFFFFF;">${b.customer_name || 'ลูกค้าทั่วไป'}</td>
                             <td>${b.account_login || 'MT5 Ready'}</td>
                             <td class="mono">$${parseFloat(b.balance || 0).toFixed(2)}</td>
-                            <td class="mono" style="font-weight: 800; color: ${pnlColor};">${pnlVal >= 0 ? '+' : ''}$${pnlVal.toFixed(2)}</td>
-                            <td style="font-size: 11px; color: var(--text-muted);">${b.last_seen_sec} วินาทีที่แล้ว</td>
+                            <td class="mono" style="font-weight: 700; color: ${pnlColor};">${pnlVal >= 0 ? '+' : ''}$${pnlVal.toFixed(2)}</td>
+                            <td style="font-size: 11px; color: var(--text-muted);">${b.last_seen_sec}s ago</td>
                             <td>
-                                <button type="button" class="btn-action btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="kickDevice('${b.hwid}')">⛔ เตะออก (Kick)</button>
+                                <button type="button" class="btn-icon danger" onclick="kickDevice('${b.hwid}')">⛔ เตะออก</button>
                             </td>
                         </tr>
                     `;
@@ -1425,43 +1521,43 @@ ADMIN_HTML = """<!DOCTYPE html>
             // Keys Table
             const tbodyKeys = document.getElementById("tbody-keys");
             if (!data.keys || data.keys.length === 0) {
-                tbodyKeys.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">🔑 ยังไม่มีรายการคีย์ลิขสิทธิ์</td></tr>';
+                tbodyKeys.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 28px;">🔑 ยังไม่มีรายการคีย์ลิขสิทธิ์</td></tr>';
             } else {
                 tbodyKeys.innerHTML = data.keys.map(k => {
                     const st = k.status;
-                    let stClass = "active";
+                    let stClass = "badge-active";
                     let stText = "🟢 ACTIVE";
                     if (st === "REVOKED" || st === "BANNED") {
-                        stClass = "revoked";
+                        stClass = "badge-revoked";
                         stText = "🚫 REVOKED";
                     } else if (st === "EXPIRED") {
-                        stClass = "expired";
+                        stClass = "badge-expired";
                         stText = "⏳ EXPIRED";
                     }
 
                     const isRevoked = (st === "REVOKED" || st === "BANNED");
                     const toggleAction = isRevoked ? "ACTIVATE" : "REVOKE";
-                    const toggleLabel = isRevoked ? "🟢 เปิดใช้งาน" : "🚫 ระงับสิทธิ์";
-                    const toggleClass = isRevoked ? "" : "btn-danger";
+                    const toggleLabel = isRevoked ? "🟢 เปิดใช้" : "🚫 ระงับ";
+                    const toggleClass = isRevoked ? "success" : "danger";
 
                     return `
                         <tr>
                             <td>
-                                <span class="mono" style="font-weight: 800; color: var(--gold-bright); cursor: pointer;" onclick="navigator.clipboard.writeText('${k.key_code}'); alert('📋 คัดลอกคีย์: ${k.key_code}')" title="คลิกเพื่อคัดลอก">${k.key_code}</span>
+                                <span class="key-tag mono" onclick="navigator.clipboard.writeText('${k.key_code}'); alert('📋 คัดลอกคีย์: ${k.key_code}')" title="คลิกเพื่อคัดลอก">${k.key_code}</span>
                             </td>
-                            <td style="font-weight: 700; color: #FFFFFF;">${k.customer_name || '-'}</td>
-                            <td><span class="badge-status ${stClass}">${stText}</span></td>
-                            <td class="mono" style="font-size: 11.5px; color: ${k.hwid_bound ? 'var(--neon-cyan)' : 'var(--text-muted)'};">
-                                ${k.hwid_bound || '(ยังไม่ผูกเครื่อง)'}
-                                ${k.hwid_bound ? `<button type="button" style="background:none; border:none; color:var(--gold-bright); cursor:pointer; font-size:11px; margin-left:4px;" onclick="keyAction('${k.key_code}', 'RESET_HWID')" title="ปลดล็อคเครื่อง">🔄</button>` : ''}
+                            <td style="font-weight: 600; color: #FFFFFF;">${k.customer_name || '-'}</td>
+                            <td><span class="badge-pill ${stClass}">${stText}</span></td>
+                            <td class="mono" style="font-size: 11.5px; color: ${k.hwid_bound ? 'var(--accent-cyan)' : 'var(--text-muted)'};">
+                                ${k.hwid_bound || '(รอผูกเครื่อง)'}
+                                ${k.hwid_bound ? `<button type="button" style="background:none; border:none; color:#FDE047; cursor:pointer; font-size:11px; margin-left:4px;" onclick="keyAction('${k.key_code}', 'RESET_HWID')" title="ปลดล็อคเครื่อง">🔄</button>` : ''}
                             </td>
                             <td style="font-size: 11.5px;">${k.expires_at || '-'}</td>
                             <td style="font-size: 11px; color: var(--text-muted);">${k.notes || '-'}</td>
                             <td>
-                                <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-                                    <button type="button" class="btn-action" style="padding: 4px 8px; font-size: 11px;" onclick="keyAction('${k.key_code}', 'EXTEND_30D')">+30 วัน</button>
-                                    <button type="button" class="btn-action ${toggleClass}" style="padding: 4px 8px; font-size: 11px;" onclick="keyAction('${k.key_code}', '${toggleAction}')">${toggleLabel}</button>
-                                    <button type="button" class="btn-action btn-danger" style="padding: 4px 6px; font-size: 11px;" onclick="if(confirm('ลบคีย์นี้ถาวร?')) keyAction('${k.key_code}', 'DELETE')">🗑️</button>
+                                <div class="btn-group-actions">
+                                    <button type="button" class="btn-icon" onclick="keyAction('${k.key_code}', 'EXTEND_30D')">+30 วัน</button>
+                                    <button type="button" class="btn-icon ${toggleClass}" onclick="keyAction('${k.key_code}', '${toggleAction}')">${toggleLabel}</button>
+                                    <button type="button" class="btn-icon danger" onclick="if(confirm('ลบคีย์นี้ถาวร?')) keyAction('${k.key_code}', 'DELETE')">🗑️</button>
                                 </div>
                             </td>
                         </tr>
